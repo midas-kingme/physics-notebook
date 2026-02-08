@@ -9,7 +9,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 [![Made with ❤️](https://img.shields.io/badge/Made%20with-❤️-red.svg)](https://github.com/CasberryIndia/Physics-Notebook)
 
-[Demo](https://your-demo-link) • [Report Bug](https://github.com/CasberryIndia/Physics-Notebook/issues) • [Request Feature](https://github.com/CasberryIndia/Physics-Notebook/issues)
+[Live Link](https://physics-notebook.casberry.in) • [Report Bug](https://github.com/CasberryIndia/Physics-Notebook/issues) • [Request Feature](https://github.com/CasberryIndia/Physics-Notebook/issues)
 
 </div>
 

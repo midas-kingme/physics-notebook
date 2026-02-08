@@ -111,7 +111,7 @@ Before submitting a new concept, ensure:
 
 1. **Fork and clone the repository**
 ```bash
-git clone https://github.com/YOUR_USERNAME/Physics-Notebook.git
+git clone https://github.com/CasberryIndia/Physics-Notebook.git
 cd Physics-Notebook
 ```
 
@@ -328,8 +328,8 @@ Closes #XX
 
 Don't hesitate to ask questions by:
 
-- Opening a [Discussion](https://github.com/YOUR_USERNAME/Physics-Notebook/discussions)
-- Creating an [Issue](https://github.com/YOUR_USERNAME/Physics-Notebook/issues)
+- Opening a [Discussion](https://github.com/CasberryIndia/Physics-Notebook/discussions)
+- Creating an [Issue](https://github.com/CasberryIndia/Physics-Notebook/issues)
 - Reaching out to maintainers
 
 ## Recognition
