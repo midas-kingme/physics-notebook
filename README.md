@@ -4,12 +4,12 @@
 
 <div align="center">
 
-[![GitHub stars](https://img.shields.io/github/stars/YOUR_USERNAME/Physics-Notebook?style=social)](https://github.com/YOUR_USERNAME/Physics-Notebook/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/CasberryIndia/Physics-Notebook?style=social)](https://github.com/CasberryIndia/Physics-Notebook/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
-[![Made with ❤️](https://img.shields.io/badge/Made%20with-❤️-red.svg)](https://github.com/YOUR_USERNAME/Physics-Notebook)
+[![Made with ❤️](https://img.shields.io/badge/Made%20with-❤️-red.svg)](https://github.com/CasberryIndia/Physics-Notebook)
 
-[Demo](https://your-demo-link) • [Report Bug](https://github.com/YOUR_USERNAME/Physics-Notebook/issues) • [Request Feature](https://github.com/YOUR_USERNAME/Physics-Notebook/issues)
+[Demo](https://your-demo-link) • [Report Bug](https://github.com/CasberryIndia/Physics-Notebook/issues) • [Request Feature](https://github.com/CasberryIndia/Physics-Notebook/issues)
 
 </div>
 
@@ -61,7 +61,7 @@ You only need a modern web browser! No build process or dependencies required.
 
 1. Clone the repository
 ```bash
-git clone https://github.com/YOUR_USERNAME/Physics-Notebook.git
+git clone https://github.com/CasberryIndia/Physics-Notebook.git
 cd Physics-Notebook
 ```
 
@@ -244,11 +244,11 @@ Each concept must:
 
 ## 📊 GitHub Star History
 
-<a href="https://star-history.com/#YOUR_USERNAME/Physics-Notebook&Date">
+<a href="https://star-history.com/#CasberryIndia/Physics-Notebook&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=YOUR_USERNAME/Physics-Notebook&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=YOUR_USERNAME/Physics-Notebook&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=YOUR_USERNAME/Physics-Notebook&type=Date" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=CasberryIndia/Physics-Notebook&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=CasberryIndia/Physics-Notebook&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=CasberryIndia/Physics-Notebook&type=Date" />
   </picture>
 </a>
 
@@ -265,9 +265,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 💬 Community
 
-- **Questions?** Open a [Discussion](https://github.com/YOUR_USERNAME/Physics-Notebook/discussions)
-- **Found a bug?** Create an [Issue](https://github.com/YOUR_USERNAME/Physics-Notebook/issues)
-- **Have an idea?** We'd love to hear it in [Discussions](https://github.com/YOUR_USERNAME/Physics-Notebook/discussions)
+- **Questions?** Open a [Discussion](https://github.com/CasberryIndia/Physics-Notebook/discussions)
+- **Found a bug?** Create an [Issue](https://github.com/CasberryIndia/Physics-Notebook/issues)
+- **Have an idea?** We'd love to hear it in [Discussions](https://github.com/CasberryIndia/Physics-Notebook/discussions)
 
 ## 🚧 Roadmap
 
