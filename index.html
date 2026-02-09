@@ -37,9 +37,16 @@
             <i data-lucide="atom"></i>
             Physics • Notebook
         </div>
-        <button id="themeBtn">
-            <i data-lucide="moon" style="width:16px;"></i> Theme
-        </button>
+        <div class="nav-controls">
+            <a href="https://github.com/CasberryIndia/Physics-Notebook" target="_blank" class="github-btn"
+                title="View Source on GitHub">
+                <i data-lucide="github" style="width:16px;"></i>
+                <span id="starCount">...</span>
+            </a>
+            <button id="themeBtn">
+                <i data-lucide="moon" style="width:16px;"></i> Theme
+            </button>
+        </div>
     </nav>
 
     <div class="library-header">
@@ -67,6 +74,10 @@
     <main class="grid-container" id="cardsGrid">
         <!-- Cards Injected via JS -->
     </main>
+
+    <footer class="main-footer">
+        <p>Want to add a concept? <a href="contribute.html">Contribute</a></p>
+    </footer>
 
     <!-- Scripts -->
     <script src="js/common.js"></script>

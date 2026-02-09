@@ -95,7 +95,7 @@ nav.sticky {
 }
 
 nav.sticky .logo,
-nav.sticky button {
+nav.sticky .nav-controls {
     pointer-events: auto;
 }
 
@@ -136,4 +136,35 @@ nav.sticky .nav-bg {
     align-items: center;
     gap: 6px;
     font-family: var(--font-sans);
+}
+
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.github-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--text-main);
+    font-weight: 500;
+    transition: opacity 0.2s;
+    background: var(--tag-bg);
+    padding: 6px 12px;
+    border-radius: 100px;
+    border: 1px solid var(--border-subtle);
+}
+
+.github-btn:hover {
+    opacity: 0.8;
+    background: var(--border-subtle);
+}
+
+#starCount {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    margin-left: 2px;
 }

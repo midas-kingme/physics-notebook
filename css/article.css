@@ -195,7 +195,7 @@ input[type=range] {
         height: 50vh;
         position: relative;
         top: 0;
-        order: -1;
+        /* order: -1; Removed to keep content on top */
         margin-bottom: 2rem;
         width: 100vw;
         margin-left: -5vw;
