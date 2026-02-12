@@ -52,6 +52,81 @@
             height: 20px;
             fill: currentColor;
         }
+
+        /* Slider Controls */
+        .controls {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--bg-color);
+            border: 1px solid var(--line-subtle);
+            border-radius: 8px;
+        }
+
+        .control-group {
+            margin-bottom: 1rem;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .control-value {
+            background: var(--accent);
+            color: var(--bg-color);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--line-subtle);
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.2s ease;
+        }
+
+        .slider::-moz-range-thumb:hover {
+            transform: scale(1.2);
+        }
     </style>
 
     <!-- MathJax Configuration -->
@@ -119,6 +194,25 @@
                     magnetic field. This causes charged particles to move in circular or helical paths, never doing work
                     on the particle itself.
                 </p>
+
+                <!-- SLIDER CONTROLS -->
+                <div class="controls">
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Magnetic Field (B)</span>
+                            <span class="control-value" id="lorentz-b-value">1.0 T</span>
+                        </div>
+                        <input type="range" class="slider" id="lorentz-b" min="0.1" max="2.0" step="0.1" value="1.0">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Velocity (v)</span>
+                            <span class="control-value" id="lorentz-v-value">1.0 x</span>
+                        </div>
+                        <input type="range" class="slider" id="lorentz-v" min="0.1" max="2.0" step="0.1" value="1.0">
+                    </div>
+                </div>
+
                 <!-- ETU CARD -->
                 <div class="etu-card">
                     <span class="etu-tag">Real World Analogy</span>
@@ -195,6 +289,18 @@
                     closed surface is always zero. Every field line that enters must exit, creating the characteristic
                     dipole pattern we see in magnets.
                 </p>
+
+                <!-- SLIDER CONTROLS -->
+                <div class="controls">
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Field Strength</span>
+                            <span class="control-value" id="field-strength-value">1.0</span>
+                        </div>
+                        <input type="range" class="slider" id="field-strength" min="0.2" max="2.0" step="0.1" value="1.0">
+                    </div>
+                </div>
+
                 <!-- ETU CARD -->
                 <div class="etu-card">
                     <span class="etu-tag">Real World Analogy</span>
@@ -271,6 +377,18 @@
                     negative sign represents Lenz's Law: the induced current creates a magnetic field that opposes the
                     change that produced it.
                 </p>
+
+                <!-- SLIDER CONTROLS -->
+                <div class="controls">
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Field Frequency</span>
+                            <span class="control-value" id="induction-freq-value">1.0 Hz</span>
+                        </div>
+                        <input type="range" class="slider" id="induction-freq" min="0.2" max="3.0" step="0.1" value="1.0">
+                    </div>
+                </div>
+
                 <!-- ETU CARD -->
                 <div class="etu-card">
                     <span class="etu-tag">Real World Analogy</span>
@@ -298,7 +416,7 @@
                     <button onclick="openAI('induction', 'chatgpt')" class="ai-btn" title="Ask ChatGPT"><svg
                             viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path
-                                d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
+                                d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.9992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.4847 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
                         </svg></button>
                     <button onclick="openAI('induction', 'claude')" class="ai-btn" title="Ask Claude"><svg
                             xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision"
@@ -377,6 +495,7 @@
                 this.setupObserver();
                 this.initScrollAnimations();
                 this.initVisuals();
+                this.initSliders();
 
                 window.addEventListener('theme-changed', (e) => {
                     this.visuals.forEach(v => v.updateColors());
@@ -411,6 +530,39 @@
             addVisual(visual) {
                 this.visuals.push(visual);
                 this.observer.observe(visual.canvas);
+            },
+
+            initSliders() {
+                // Lorentz Force sliders
+                document.getElementById('lorentz-b').addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    document.getElementById('lorentz-b-value').textContent = value.toFixed(1) + ' T';
+                    const lorentz = this.visuals.find(v => v.canvas.id === 'canvas-lorentz');
+                    if (lorentz) lorentz.setBField(value);
+                });
+
+                document.getElementById('lorentz-v').addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    document.getElementById('lorentz-v-value').textContent = value.toFixed(1) + ' x';
+                    const lorentz = this.visuals.find(v => v.canvas.id === 'canvas-lorentz');
+                    if (lorentz) lorentz.setVelocity(value);
+                });
+
+                // Field Lines slider
+                document.getElementById('field-strength').addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    document.getElementById('field-strength-value').textContent = value.toFixed(1);
+                    const fieldLines = this.visuals.find(v => v.canvas.id === 'canvas-fieldlines');
+                    if (fieldLines) fieldLines.setStrength(value);
+                });
+
+                // Induction slider
+                document.getElementById('induction-freq').addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    document.getElementById('induction-freq-value').textContent = value.toFixed(1) + ' Hz';
+                    const induction = this.visuals.find(v => v.canvas.id === 'canvas-induction');
+                    if (induction) induction.setFrequency(value);
+                });
             }
         };
 
@@ -461,42 +613,56 @@
             constructor(id) {
                 super(id);
                 this.angle = 0;
-                this.radius = 80;
+                this.baseRadius = 80;
+                this.bField = 1.0;
+                this.velocity = 1.0;
+            }
+
+            setBField(value) {
+                this.bField = value;
+            }
+
+            setVelocity(value) {
+                this.velocity = value;
             }
 
             draw() {
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-                // Animate
-                this.angle += 0.02;
+                // Animate based on velocity
+                this.angle += 0.02 * this.velocity;
+
+                // Calculate radius based on Lorentz force (F = qvB, so r ∝ 1/(vB))
+                const radius = this.baseRadius / (this.bField * this.velocity);
 
                 // Draw magnetic field (dots representing B field coming out of page)
                 this.ctx.fillStyle = this.secondary;
-                for (let x = 40; x < this.canvas.width - 40; x += 60) {
-                    for (let y = 40; y < this.canvas.height - 40; y += 60) {
+                const density = Math.floor(60 / this.bField);
+                for (let x = 40; x < this.canvas.width - 40; x += density) {
+                    for (let y = 40; y < this.canvas.height - 40; y += density) {
                         this.ctx.beginPath();
-                        this.ctx.arc(x, y, 3, 0, Math.PI * 2);
+                        this.ctx.arc(x, y, 3 * this.bField, 0, Math.PI * 2);
                         this.ctx.fill();
                     }
                 }
 
                 // Particle position (circular motion)
-                const px = this.cx + Math.cos(this.angle) * this.radius;
-                const py = this.cy + Math.sin(this.angle) * this.radius;
+                const px = this.cx + Math.cos(this.angle) * radius;
+                const py = this.cy + Math.sin(this.angle) * radius;
 
                 // Draw velocity vector (tangent)
-                const vx = -Math.sin(this.angle);
-                const vy = Math.cos(this.angle);
+                const vx = -Math.sin(this.angle) * this.velocity;
+                const vy = Math.cos(this.angle) * this.velocity;
 
-                // Draw force vector (radial inward)
-                const fx = -Math.cos(this.angle);
-                const fy = -Math.sin(this.angle);
+                // Draw force vector (radial inward, proportional to F = vB)
+                const fx = -Math.cos(this.angle) * this.velocity * this.bField;
+                const fy = -Math.sin(this.angle) * this.velocity * this.bField;
 
                 // Draw particle path
                 this.ctx.strokeStyle = this.accent;
                 this.ctx.lineWidth = 2;
                 this.ctx.beginPath();
-                this.ctx.arc(this.cx, this.cy, this.radius, 0, Math.PI * 2);
+                this.ctx.arc(this.cx, this.cy, radius, 0, Math.PI * 2);
                 this.ctx.stroke();
 
                 // Draw particle
@@ -535,12 +701,17 @@
             constructor(id) {
                 super(id);
                 this.offset = 0;
+                this.strength = 1.0;
+            }
+
+            setStrength(value) {
+                this.strength = value;
             }
 
             draw() {
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-                this.offset += 0.5;
+                this.offset += 0.5 * this.strength;
 
                 // Magnet dimensions
                 const magnetWidth = 200;
@@ -562,13 +733,13 @@
                 this.ctx.fillText('S', magnetLeft + magnetWidth * 3 / 4 - 5, magnetTop + magnetHeight / 2 + 7);
 
                 // Draw field lines
-                const numLines = 6;
+                const numLines = Math.floor(6 * this.strength);
                 this.ctx.strokeStyle = this.color;
-                this.ctx.lineWidth = 2;
+                this.ctx.lineWidth = 2 * this.strength;
 
                 for (let i = 0; i < numLines; i++) {
-                    const t = i / (numLines - 1);
-                    const amplitude = 60 + t * 40;
+                    const t = i / (numLines - 1 || 1);
+                    const amplitude = (60 + t * 40) * this.strength;
 
                     this.ctx.beginPath();
                     for (let x = -100; x <= 100; x += 2) {
@@ -595,7 +766,7 @@
             }
 
             drawArrow(x, y, angle) {
-                const size = 8;
+                const size = 8 * this.strength;
                 this.ctx.save();
                 this.ctx.translate(x, y);
                 this.ctx.rotate(angle);
@@ -616,12 +787,17 @@
             constructor(id) {
                 super(id);
                 this.time = 0;
+                this.frequency = 1.0;
+            }
+
+            setFrequency(value) {
+                this.frequency = value;
             }
 
             draw() {
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-                this.time += 0.03;
+                this.time += 0.03 * this.frequency;
 
                 // Coil parameters
                 const coilRadius = 100;
@@ -660,7 +836,7 @@
                 }
 
                 // Draw induced current indicator
-                const currentStrength = Math.cos(this.time);
+                const currentStrength = Math.cos(this.time * this.frequency);
                 const currentColor = currentStrength > 0 ? this.accent : this.secondary;
 
                 this.ctx.fillStyle = currentColor;
@@ -671,7 +847,7 @@
                 this.ctx.fillStyle = this.color;
                 this.ctx.font = 'bold 24px Inter';
                 this.ctx.textAlign = 'center';
-                this.ctx.fillText(Math.abs(currentStrength).toFixed(2) + 'A', this.cx, this.cy + coilHeight / 2 + 70);
+                this.ctx.fillText(Math.abs(currentStrength * this.frequency).toFixed(2) + 'A', this.cx, this.cy + coilHeight / 2 + 70);
 
                 // Labels
                 this.ctx.font = '14px Inter';

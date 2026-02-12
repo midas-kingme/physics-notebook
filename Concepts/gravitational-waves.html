@@ -52,6 +52,81 @@
             height: 20px;
             fill: currentColor;
         }
+
+        /* Slider Controls */
+        .controls {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--bg-color);
+            border: 1px solid var(--line-subtle);
+            border-radius: 8px;
+        }
+
+        .control-group {
+            margin-bottom: 1rem;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .control-value {
+            background: var(--accent);
+            color: var(--bg-color);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--line-subtle);
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.2s ease;
+        }
+
+        .slider::-moz-range-thumb:hover {
+            transform: scale(1.2);
+        }
     </style>
 
     <!-- MathJax Configuration -->
@@ -115,6 +190,25 @@
                 <p>
                     The amplitude of gravitational waves decreases with distance (1/r), while the strain is proportional to the second time derivative of the quadrupole moment of the source. This means only the most violent cosmic events produce detectable signals.
                 </p>
+
+                <!-- SLIDER CONTROLS -->
+                <div class="controls">
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Wave Frequency</span>
+                            <span class="control-value" id="ripple-freq-value">1.0 Hz</span>
+                        </div>
+                        <input type="range" class="slider" id="ripple-freq" min="0.2" max="3.0" step="0.1" value="1.0">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Wave Amplitude</span>
+                            <span class="control-value" id="ripple-amp-value">1.0</span>
+                        </div>
+                        <input type="range" class="slider" id="ripple-amp" min="0.2" max="2.0" step="0.1" value="1.0">
+                    </div>
+                </div>
+
                 <!-- ETU CARD -->
                 <div class="etu-card">
                     <span class="etu-tag">Real World Analogy</span>
@@ -140,7 +234,7 @@
                     <button onclick="openAI('spacetime', 'chatgpt')" class="ai-btn" title="Ask ChatGPT"><svg
                             viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path
-                                d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
+                                d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.9992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.4847 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
                         </svg></button>
                     <button onclick="openAI('spacetime', 'claude')" class="ai-btn" title="Ask Claude"><svg
                             xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision"
@@ -185,6 +279,25 @@
                 <p>
                     This equation describes the power radiated in gravitational waves by a binary system. The closer the objects get (smaller separation a), the more intensely they radiate, leading to an inspiral that accelerates until merger. LIGO has detected dozens of such events, confirming Einstein's predictions.
                 </p>
+
+                <!-- SLIDER CONTROLS -->
+                <div class="controls">
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Black Hole Mass</span>
+                            <span class="control-value" id="merger-mass-value">30 M☉</span>
+                        </div>
+                        <input type="range" class="slider" id="merger-mass" min="10" max="50" step="1" value="30">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Initial Separation</span>
+                            <span class="control-value" id="merger-sep-value">120 km</span>
+                        </div>
+                        <input type="range" class="slider" id="merger-sep" min="60" max="180" step="5" value="120">
+                    </div>
+                </div>
+
                 <!-- ETU CARD -->
                 <div class="etu-card">
                     <span class="etu-tag">Real World Analogy</span>
@@ -210,7 +323,7 @@
                     <button onclick="openAI('mergers', 'chatgpt')" class="ai-btn" title="Ask ChatGPT"><svg
                             viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path
-                                d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.4847 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.9942 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
+                                d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.9992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.4847 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
                         </svg></button>
                     <button onclick="openAI('mergers', 'claude')" class="ai-btn" title="Ask Claude"><svg
                             xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision"
@@ -255,6 +368,25 @@
                 <p>
                     This equation shows how a gravitational wave with strain h causes a path length difference ΔL in an interferometer with arm length L and laser wavelength λ. The longer the arms and the shorter the wavelength, the more sensitive the detector becomes.
                 </p>
+
+                <!-- SLIDER CONTROLS -->
+                <div class="controls">
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Signal Frequency</span>
+                            <span class="control-value" id="detection-freq-value">100 Hz</span>
+                        </div>
+                        <input type="range" class="slider" id="detection-freq" min="50" max="200" step="5" value="100">
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Signal Amplitude</span>
+                            <span class="control-value" id="detection-amp-value">1.0</span>
+                        </div>
+                        <input type="range" class="slider" id="detection-amp" min="0.2" max="2.0" step="0.1" value="1.0">
+                    </div>
+                </div>
+
                 <!-- ETU CARD -->
                 <div class="etu-card">
                     <span class="etu-tag">Real World Analogy</span>
@@ -280,7 +412,7 @@
                     <button onclick="openAI('detection', 'chatgpt')" class="ai-btn" title="Ask ChatGPT"><svg
                             viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path
-                                d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.4847 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.9942 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
+                                d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.9992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.4847 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
                         </svg></button>
                     <button onclick="openAI('detection', 'claude')" class="ai-btn" title="Ask Claude"><svg
                             xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision"
@@ -318,13 +450,13 @@
             let prompt = "";
             switch (topic) {
                 case 'spacetime':
-                    prompt = "Explain gravitational waves as ripples in spacetime: Einstein's prediction, how they stretch and compress space, the quadrupole moment, and why they're so hard to detect.";
+                    prompt = "Explain gravitational waves as ripples in spacetime: Einstein's prediction, how they stretch and compress space, quadrupole moment, and why they're so hard to detect.";
                     break;
                 case 'mergers':
-                    prompt = "Explain binary black hole mergers: how they generate gravitational waves, the inspiral-merger-ringdown process, chirp signals, and what LIGO has discovered.";
+                    prompt = "Explain binary black hole mergers: how they generate gravitational waves, inspiral-merger-ringdown process, chirp signals, and what LIGO has discovered.";
                     break;
                 case 'detection':
-                    prompt = "Explain how LIGO detects gravitational waves: laser interferometry, the 4km arms, detecting changes smaller than a proton, the 2015 discovery, and multi-messenger astronomy.";
+                    prompt = "Explain how LIGO detects gravitational waves: laser interferometry, 4km arms, detecting changes smaller than a proton, 2015 discovery, and multi-messenger astronomy.";
                     break;
             }
             const encoded = encodeURIComponent(prompt);
@@ -359,6 +491,7 @@
                 this.setupObserver();
                 this.initScrollAnimations();
                 this.initVisuals();
+                this.initSliders();
 
                 window.addEventListener('theme-changed', (e) => {
                     this.visuals.forEach(v => v.updateColors());
@@ -393,6 +526,53 @@
             addVisual(visual) {
                 this.visuals.push(visual);
                 this.observer.observe(visual.canvas);
+            },
+
+            initSliders() {
+                // Spacetime Ripples sliders
+                document.getElementById('ripple-freq').addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    document.getElementById('ripple-freq-value').textContent = value.toFixed(1) + ' Hz';
+                    const spacetime = this.visuals.find(v => v.canvas.id === 'canvas-spacetime');
+                    if (spacetime) spacetime.setFrequency(value);
+                });
+
+                document.getElementById('ripple-amp').addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    document.getElementById('ripple-amp-value').textContent = value.toFixed(1);
+                    const spacetime = this.visuals.find(v => v.canvas.id === 'canvas-spacetime');
+                    if (spacetime) spacetime.setAmplitude(value);
+                });
+
+                // Mergers sliders
+                document.getElementById('merger-mass').addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    document.getElementById('merger-mass-value').textContent = value.toFixed(0) + ' M☉';
+                    const mergers = this.visuals.find(v => v.canvas.id === 'canvas-mergers');
+                    if (mergers) mergers.setMass(value);
+                });
+
+                document.getElementById('merger-sep').addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    document.getElementById('merger-sep-value').textContent = value.toFixed(0) + ' km';
+                    const mergers = this.visuals.find(v => v.canvas.id === 'canvas-mergers');
+                    if (mergers) mergers.setSeparation(value);
+                });
+
+                // Detection sliders
+                document.getElementById('detection-freq').addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    document.getElementById('detection-freq-value').textContent = value.toFixed(0) + ' Hz';
+                    const detection = this.visuals.find(v => v.canvas.id === 'canvas-detection');
+                    if (detection) detection.setFrequency(value);
+                });
+
+                document.getElementById('detection-amp').addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    document.getElementById('detection-amp-value').textContent = value.toFixed(1);
+                    const detection = this.visuals.find(v => v.canvas.id === 'canvas-detection');
+                    if (detection) detection.setAmplitude(value);
+                });
             }
         };
 
@@ -443,11 +623,21 @@
             constructor(id) {
                 super(id);
                 this.time = 0;
+                this.frequency = 1.0;
+                this.amplitude = 1.0;
+            }
+
+            setFrequency(value) {
+                this.frequency = value;
+            }
+
+            setAmplitude(value) {
+                this.amplitude = value;
             }
 
             draw() {
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                this.time += 0.03;
+                this.time += 0.03 * this.frequency;
 
                 // Draw grid representing spacetime
                 const gridSize = 40;
@@ -457,8 +647,9 @@
                 // Calculate wave parameters
                 const centerX = this.canvas.width / 2;
                 const centerY = this.canvas.height / 2;
-                const waveFreq = 0.02;
-                const waveSpeed = 0.05;
+                const waveFreq = 0.02 * this.frequency;
+                const waveSpeed = 0.05 * this.frequency;
+                const waveAmp = 15 * this.amplitude;
 
                 this.ctx.lineWidth = 1;
 
@@ -478,7 +669,7 @@
                         const dist = Math.sqrt(dx * dx + dy * dy);
 
                         // Calculate wave amplitude (decays with distance)
-                        const wave = Math.sin(dist * waveFreq - this.time * waveSpeed * 2) * 15 * Math.exp(-dist * 0.002);
+                        const wave = Math.sin(dist * waveFreq - this.time * waveSpeed * 2) * waveAmp * Math.exp(-dist * 0.002);
 
                         // Apply plus-polarization distortion
                         const distortedX = x + wave * (dx / dist || 0) * 0.5;
@@ -509,7 +700,7 @@
                         const dist = Math.sqrt(dx * dx + dy * dy);
 
                         // Calculate wave amplitude
-                        const wave = Math.sin(dist * waveFreq - this.time * waveSpeed * 2) * 15 * Math.exp(-dist * 0.002);
+                        const wave = Math.sin(dist * waveFreq - this.time * waveSpeed * 2) * waveAmp * Math.exp(-dist * 0.002);
 
                         // Apply plus-polarization distortion
                         const distortedX = x - wave * (dx / dist || 0) * 0.5;
@@ -548,19 +739,29 @@
                 super(id);
                 this.angle = 0;
                 this.separation = 120;
+                this.mass = 30;
                 this.merged = false;
+            }
+
+            setMass(value) {
+                this.mass = value;
+            }
+
+            setSeparation(value) {
+                this.separation = value;
             }
 
             draw() {
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-                // Animate inspiral
-                this.angle += 0.05;
+                // Animate inspiral - faster for heavier masses
+                const speed = 0.05 * (this.mass / 30);
+                this.angle += speed;
                 this.separation *= 0.998;
 
                 // Reset if merged
                 if (this.separation < 20) {
-                    this.separation = 120;
+                    this.separation = parseFloat(document.getElementById('merger-sep').value);
                     this.merged = true;
                     setTimeout(() => this.merged = false, 500);
                 }
@@ -572,13 +773,14 @@
                 const x2 = this.cx - Math.cos(this.angle) * r;
                 const y2 = this.cy - Math.sin(this.angle) * r;
 
-                // Draw gravitational waves
+                // Draw gravitational waves - amplitude depends on mass
                 this.ctx.strokeStyle = this.secondary;
                 this.ctx.lineWidth = 2;
                 const waveCount = 5;
+                const waveAmp = this.mass / 30;
                 for (let i = 0; i < waveCount; i++) {
                     const radius = (this.time % (waveCount * 30)) + i * 30;
-                    const alpha = 1 - (radius / (waveCount * 30));
+                    const alpha = (1 - (radius / (waveCount * 30))) * waveAmp;
                     this.ctx.globalAlpha = alpha * 0.5;
                     this.ctx.beginPath();
                     this.ctx.arc(this.cx, this.cy, radius, 0, Math.PI * 2);
@@ -586,8 +788,8 @@
                 }
                 this.ctx.globalAlpha = 1;
 
-                // Draw black holes
-                const bhRadius = 20 + (120 - this.separation) * 0.1;
+                // Draw black holes - size depends on mass
+                const bhRadius = 20 + (this.mass - 30) * 0.3 + (120 - this.separation) * 0.1;
 
                 // Black hole 1
                 this.ctx.fillStyle = this.accent;
@@ -626,6 +828,16 @@
                 super(id);
                 this.time = 0;
                 this.waveData = [];
+                this.frequency = 100;
+                this.amplitude = 1.0;
+            }
+
+            setFrequency(value) {
+                this.frequency = value;
+            }
+
+            setAmplitude(value) {
+                this.amplitude = value;
             }
 
             draw() {
@@ -633,9 +845,9 @@
                 this.time += 0.05;
 
                 // Generate gravitational wave signal (chirp)
-                const freq = 0.02 + Math.sin(this.time * 0.5) * 0.02;
-                const amplitude = 30 + Math.sin(this.time * 0.3) * 20;
-                const signal = Math.sin(this.time * freq) * amplitude;
+                const freq = (this.frequency / 100) * 0.02 + Math.sin(this.time * 0.5) * 0.01;
+                const amplitude = (30 + Math.sin(this.time * 0.3) * 20) * this.amplitude;
+                const signal = Math.sin(this.time * this.frequency / 10) * amplitude;
 
                 // Add to wave data
                 this.waveData.push(signal);
@@ -691,14 +903,14 @@
                 this.ctx.strokeRect(graphX, graphY, graphWidth, graphHeight);
                 this.ctx.globalAlpha = 1;
 
-                // Draw signal
+                // Draw signal - scaled by amplitude slider
                 this.ctx.strokeStyle = this.accent;
                 this.ctx.lineWidth = 2;
                 this.ctx.beginPath();
 
                 for (let i = 0; i < this.waveData.length; i++) {
                     const x = graphX + (i / this.waveData.length) * graphWidth;
-                    const y = graphY + graphHeight / 2 + this.waveData[i];
+                    const y = graphY + graphHeight / 2 + this.waveData[i] * this.amplitude;
 
                     if (i === 0) {
                         this.ctx.moveTo(x, y);
