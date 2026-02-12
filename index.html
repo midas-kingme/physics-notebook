@@ -127,6 +127,14 @@
                 href: 'Concepts/electric-fields.html'
             },
             {
+                id: 'magnetic',
+                title: 'Magnetic Fields',
+                domain: 'Electromagnetism',
+                desc: 'Magnetic dipoles, current-carrying wires, and electromagnetic induction.',
+                type: 'magnetic',
+                href: 'Concepts/magnetic-fields.html'
+            },
+            {
                 id: 'double-slit',
                 title: 'Double Slit Experiment',
                 domain: 'Quantum',
@@ -366,6 +374,68 @@
             }
         }
 
+        class MagneticVisual extends BaseVisual {
+            draw() {
+                if (!this.isVisible) return;
+                this.time += 0.05;
+                this.clear();
+                const cx = this.width / 2;
+                const cy = this.height / 2;
+
+                // Draw magnet
+                const magnetWidth = 60;
+                const magnetHeight = 20;
+
+                // North pole (red)
+                this.ctx.fillStyle = '#e74c3c';
+                this.ctx.fillRect(cx - magnetWidth/2, cy - magnetHeight/2, magnetWidth/2, magnetHeight);
+
+                // South pole (blue)
+                this.ctx.fillStyle = '#3498db';
+                this.ctx.fillRect(cx, cy - magnetHeight/2, magnetWidth/2, magnetHeight);
+
+                // Draw field lines
+                this.ctx.strokeStyle = this.accent;
+                this.ctx.lineWidth = 1.5;
+                this.ctx.globalAlpha = 0.6;
+
+                const numLines = 4;
+                for (let i = 0; i < numLines; i++) {
+                    const angle = (i / numLines) * Math.PI - Math.PI/2 + 0.2;
+                    const rStart = magnetWidth/2 + 5;
+
+                    // Trace field line
+                    this.ctx.beginPath();
+                    let x = cx - magnetWidth/2;
+                    let y = cy + rStart * Math.sin(angle);
+                    this.ctx.moveTo(x, y);
+
+                    for (let t = 0; t < Math.PI; t += 0.05) {
+                        const r = rStart * Math.exp(t * 0.3);
+                        x = cx + r * Math.cos(t + Math.PI);
+                        y = cy + r * Math.sin(t + Math.PI);
+                        this.ctx.lineTo(x, y);
+                    }
+                    this.ctx.stroke();
+                }
+
+                this.ctx.globalAlpha = 1;
+
+                // Animate particles along field lines
+                for (let i = 0; i < 3; i++) {
+                    const t = (this.time + i * 2) % (Math.PI * 2);
+                    const r = 40 + Math.sin(t) * 20;
+                    const x = cx + r * Math.cos(t + Math.PI);
+                    const y = cy + r * Math.sin(t + Math.PI);
+
+                    this.ctx.fillStyle = this.accent;
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, 3, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+            }
+        }
+
         // ------------------------------------------------------------------
         // APP LOGIC
         // ------------------------------------------------------------------
@@ -448,6 +518,7 @@
                             case 'fields': visual = new FieldVisual(canvas); break;
                             case 'pendulum': visual = new PendulumVisual(canvas); break;
                             case 'slit': visual = new SlitVisual(canvas); break;
+                            case 'magnetic': visual = new MagneticVisual(canvas); break;
                             default: visual = new BaseVisual(canvas);
                         }
                         visual.resize();
