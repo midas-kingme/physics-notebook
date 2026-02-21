@@ -155,7 +155,7 @@
                 title: 'Gravitational Waves',
                 domain: 'Waves',
                 desc: 'Ripples in spacetime from cosmic events and LIGO detection.',
-                type: 'waves',
+                type: 'gravitational-waves',
                 href: 'Concepts/gravitational-waves.html'
             }
         ];
@@ -385,62 +385,133 @@
         class MagneticVisual extends BaseVisual {
             draw() {
                 if (!this.isVisible) return;
-                this.time += 0.05;
+                this.time += 0.02;
                 this.clear();
                 const cx = this.width / 2;
                 const cy = this.height / 2;
 
-                // Draw magnet
-                const magnetWidth = 60;
-                const magnetHeight = 20;
+                // Rotating dipole moment
+                const mx = Math.cos(this.time);
+                const my = Math.sin(this.time);
+
+                // Draw grid of compass needles
+                const spacing = 30;
+                for (let x = spacing / 2; x < this.width; x += spacing) {
+                    for (let y = spacing / 2; y < this.height; y += spacing) {
+                        const dx = x - cx;
+                        const dy = y - cy;
+                        const r2 = dx * dx + dy * dy;
+
+                        // Avoid singularity at the exact center
+                        if (r2 < spacing * spacing / 4) continue;
+
+                        const r = Math.sqrt(r2);
+                        const r5 = r2 * r2 * r;
+
+                        // Dot product m * r
+                        const m_dot_r = mx * dx + my * dy;
+
+                        // B vector (dipole field)
+                        // B ∝ 3 * (m . r) * r - r^2 * m
+                        const bx = (3 * m_dot_r * dx - r2 * mx) / r5;
+                        const by = (3 * m_dot_r * dy - r2 * my) / r5;
+
+                        // Normalize B for drawing direction
+                        const bMag = Math.sqrt(bx * bx + by * by);
+                        if (bMag === 0) continue;
+                        const nx = bx / bMag;
+                        const ny = by / bMag;
+
+                        // Opacity based on field strength (normalized roughly for visual appeal)
+                        // At r=100, r^3 = 1,000,000.
+                        const strength = Math.min(1, 1000000 / (r2 * r));
+
+                        const len = spacing * 0.35;
+
+                        this.ctx.globalAlpha = 0.15 + 0.85 * strength;
+                        this.ctx.strokeStyle = this.accent;
+                        this.ctx.lineWidth = 1.5;
+
+                        // Draw needle line
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(x - nx * len, y - ny * len);
+                        this.ctx.lineTo(x + nx * len, y + ny * len);
+                        this.ctx.stroke();
+
+                        // Draw needle head (pointing in direction of B)
+                        this.ctx.fillStyle = this.accent;
+                        this.ctx.beginPath();
+                        this.ctx.arc(x + nx * len, y + ny * len, 1.5, 0, Math.PI * 2);
+                        this.ctx.fill();
+                    }
+                }
+
+                this.ctx.globalAlpha = 1;
+
+                // Draw the central dipole (a tiny bar magnet)
+                const magLen = 15;
+                this.ctx.lineWidth = 6;
+                this.ctx.lineCap = 'round';
 
                 // North pole (red)
-                this.ctx.fillStyle = '#e74c3c';
-                this.ctx.fillRect(cx - magnetWidth/2, cy - magnetHeight/2, magnetWidth/2, magnetHeight);
+                this.ctx.strokeStyle = '#e74c3c';
+                this.ctx.beginPath();
+                this.ctx.moveTo(cx, cy);
+                this.ctx.lineTo(cx + mx * magLen, cy + my * magLen);
+                this.ctx.stroke();
 
                 // South pole (blue)
-                this.ctx.fillStyle = '#3498db';
-                this.ctx.fillRect(cx, cy - magnetHeight/2, magnetWidth/2, magnetHeight);
+                this.ctx.strokeStyle = '#3498db';
+                this.ctx.beginPath();
+                this.ctx.moveTo(cx, cy);
+                this.ctx.lineTo(cx - mx * magLen, cy - my * magLen);
+                this.ctx.stroke();
 
-                // Draw field lines
+                this.ctx.lineCap = 'butt'; // reset
+            }
+        }
+
+        class GravitationalWavesVisual extends BaseVisual {
+            draw() {
+                if (!this.isVisible) return;
+                this.time += 0.02;
+                this.clear();
+                const cx = this.width / 2;
+                const cy = this.height / 2;
+
                 this.ctx.strokeStyle = this.accent;
                 this.ctx.lineWidth = 1.5;
-                this.ctx.globalAlpha = 0.6;
 
-                const numLines = 4;
-                for (let i = 0; i < numLines; i++) {
-                    const angle = (i / numLines) * Math.PI - Math.PI/2 + 0.2;
-                    const rStart = magnetWidth/2 + 5;
+                // Draw expanding rings (quadrupole pattern approximation)
+                for (let i = 0; i < 4; i++) {
+                    const radius = ((this.time * 20 + i * 40) % 150) + 10;
+                    const alpha = 1 - (radius / 160);
 
-                    // Trace field line
+                    this.ctx.globalAlpha = Math.max(0, alpha);
                     this.ctx.beginPath();
-                    let x = cx - magnetWidth/2;
-                    let y = cy + rStart * Math.sin(angle);
-                    this.ctx.moveTo(x, y);
 
-                    for (let t = 0; t < Math.PI; t += 0.05) {
-                        const r = rStart * Math.exp(t * 0.3);
-                        x = cx + r * Math.cos(t + Math.PI);
-                        y = cy + r * Math.sin(t + Math.PI);
-                        this.ctx.lineTo(x, y);
-                    }
+                    // Elliptical distortion to simulate quadrupole wave
+                    const distortX = 1 + 0.2 * Math.sin(this.time * 2);
+                    const distortY = 1 - 0.2 * Math.sin(this.time * 2);
+
+                    this.ctx.ellipse(cx, cy, radius * distortX, radius * distortY, 0, 0, Math.PI * 2);
                     this.ctx.stroke();
                 }
 
                 this.ctx.globalAlpha = 1;
 
-                // Animate particles along field lines
-                for (let i = 0; i < 3; i++) {
-                    const t = (this.time + i * 2) % (Math.PI * 2);
-                    const r = 40 + Math.sin(t) * 20;
-                    const x = cx + r * Math.cos(t + Math.PI);
-                    const y = cy + r * Math.sin(t + Math.PI);
+                // Draw rotating binary system in center
+                const binaryAngle = this.time * 5;
+                const binarySep = 10;
 
-                    this.ctx.fillStyle = this.accent;
-                    this.ctx.beginPath();
-                    this.ctx.arc(x, y, 3, 0, Math.PI * 2);
-                    this.ctx.fill();
-                }
+                this.ctx.fillStyle = this.color;
+                this.ctx.beginPath();
+                this.ctx.arc(cx + Math.cos(binaryAngle) * binarySep, cy + Math.sin(binaryAngle) * binarySep, 4, 0, Math.PI * 2);
+                this.ctx.fill();
+
+                this.ctx.beginPath();
+                this.ctx.arc(cx - Math.cos(binaryAngle) * binarySep, cy - Math.sin(binaryAngle) * binarySep, 4, 0, Math.PI * 2);
+                this.ctx.fill();
             }
         }
 
@@ -527,6 +598,7 @@
                             case 'pendulum': visual = new PendulumVisual(canvas); break;
                             case 'slit': visual = new SlitVisual(canvas); break;
                             case 'magnetic': visual = new MagneticVisual(canvas); break;
+                            case 'gravitational-waves': visual = new GravitationalWavesVisual(canvas); break;
                             default: visual = new BaseVisual(canvas);
                         }
                         visual.resize();

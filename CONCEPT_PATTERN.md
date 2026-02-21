@@ -54,7 +54,7 @@ Use the following structure for the HTML file.
     <nav class="sticky">
         <div class="nav-bg"></div>
         <a href="../index.html" class="logo"><i data-lucide="arrow-left" width="16"></i> Library</a>
-        <button id="themeBtn"><i data-lucide="moon" width="16"></i> Mode</button>
+        <button id="themeBtn"><i data-lucide="moon" width="16"></i> Theme</button>
     </nav>
 
     <!-- Hero Section -->
@@ -96,6 +96,14 @@ Use the following structure for the HTML file.
                     <button onclick="openAI('topic', 'claude')" class="ai-btn" title="Ask Claude"><svg ... ></svg></button>
                     <button onclick="openAI('topic', 'grok')" class="ai-btn" title="Ask Grok"><svg ... ></svg></button>
                 </div>
+                
+                <!-- Interactive Controls (Optional) -->
+                <div class="sim-controls">
+                    <div class="slider-group">
+                        <label>[Variable Name] <span id="val-[id]">[Default]</span>[Unit]</label>
+                        <input type="range" id="input-[id]" min="[min]" max="[max]" step="[step]" value="[default]">
+                    </div>
+                </div>
             </div>
 
             <!-- Right: Visualization -->
@@ -108,6 +116,16 @@ Use the following structure for the HTML file.
     <div class="divider"></div>
 
     <!-- Additional sections follow same pattern... -->
+
+    <!-- References -->
+    <section class="references">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <h3>Academic References</h3>
+            <ul>
+                <li><strong>[Author]</strong> ([Year]). <em>[Title]</em>, [Details].</li>
+            </ul>
+        </div>
+    </section>
 
     <!-- Scripts -->
     <script src="../js/common.js"></script>
@@ -231,9 +249,27 @@ class BaseVisual {
 }
 
 class MySpecificVisual extends BaseVisual {
+    constructor(id) {
+        super(id);
+        
+        // Initialize interactive parameters
+        this.customParam = 0;
+        
+        // Hook up slider controls
+        const input = document.getElementById('input-[id]');
+        if (input) {
+            input.addEventListener('input', (e) => {
+                this.customParam = parseFloat(e.target.value);
+                const valDisplay = document.getElementById('val-[id]');
+                if (valDisplay) valDisplay.innerText = e.target.value;
+            });
+        }
+    }
+
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         // Custom drawing logic using this.ctx, this.cx, this.cy, this.scale
+        // Use this.customParam in your visualizations
     }
 }
 ```
@@ -248,7 +284,27 @@ class MySpecificVisual extends BaseVisual {
         title: 'New Concept Title',
         domain: 'Domain Name',
         desc: 'Short description for the card.',
-        type: 'new-type', // Used for icon mapping if needed
+        type: 'new-type', // Used to map to your unique visual class
         href: 'Concepts/new-concept.html'
+    }
+    ```
+4.  Create a unique visualization class for the index page card by extending `BaseVisual` inside `index.html`:
+    ```javascript
+    class NewConceptVisual extends BaseVisual {
+        // Implement your own custom draw() loop for the card animation
+        draw() {
+            if (!this.isVisible) return;
+            this.time += 0.05;
+            this.clear();
+            // custom animation code here
+        }
+    }
+    ```
+5.  Link the new visual class in the `renderGrid` function's switch statement inside `index.html`:
+    ```javascript
+    switch (item.type) {
+        // ... existing cases ...
+        case 'new-type': visual = new NewConceptVisual(canvas); break;
+        default: visual = new BaseVisual(canvas);
     }
     ```

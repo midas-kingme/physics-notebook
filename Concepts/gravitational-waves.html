@@ -635,99 +635,64 @@
                 this.amplitude = value;
             }
 
-            draw() {
+                        draw() {
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                this.time += 0.03 * this.frequency;
+                this.time += 0.05 * this.frequency;
 
-                // Draw grid representing spacetime
-                const gridSize = 40;
-                const cols = Math.ceil(this.canvas.width / gridSize);
-                const rows = Math.ceil(this.canvas.height / gridSize);
-
-                // Calculate wave parameters
-                const centerX = this.canvas.width / 2;
-                const centerY = this.canvas.height / 2;
-                const waveFreq = 0.02 * this.frequency;
-                const waveSpeed = 0.05 * this.frequency;
-                const waveAmp = 15 * this.amplitude;
-
+                this.ctx.strokeStyle = this.accent;
                 this.ctx.lineWidth = 1;
 
-                // Draw horizontal lines with distortion
-                for (let row = 0; row <= rows; row++) {
-                    this.ctx.strokeStyle = this.color;
-                    this.ctx.globalAlpha = 0.3;
-                    this.ctx.beginPath();
+                const spacing = 30;
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
 
-                    for (let col = 0; col <= cols; col++) {
-                        const x = col * gridSize;
-                        const y = row * gridSize;
+                this.ctx.beginPath();
 
-                        // Calculate distance from center
-                        const dx = x - centerX;
-                        const dy = y - centerY;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
+                const drawDistortedLine = (x0, y0, x1, y1) => {
+                    const steps = Math.floor(Math.max(this.canvas.width, this.canvas.height) / 10);
+                    for (let i = 0; i <= steps; i++) {
+                        const px = x0 + (x1 - x0) * (i / steps) - centerX;
+                        const py = y0 + (y1 - y0) * (i / steps) - centerY;
+                        const r = Math.sqrt(px * px + py * py) + 0.1; 
 
-                        // Calculate wave amplitude (decays with distance)
-                        const wave = Math.sin(dist * waveFreq - this.time * waveSpeed * 2) * waveAmp * Math.exp(-dist * 0.002);
+                        const k = 0.05; 
+                        const phase = k * r - this.time;
+                        const envelope = Math.min(1, 100 / r) * (r > 10 ? 1 : r / 10);
+                        const h = this.amplitude * 0.4 * envelope * Math.sin(phase);
 
-                        // Apply plus-polarization distortion
-                        const distortedX = x + wave * (dx / dist || 0) * 0.5;
-                        const distortedY = y + wave * (dy / dist || 0) * 0.5;
+                        const dx = px * (1 + h);
+                        const dy = py * (1 - h);
 
-                        if (col === 0) {
-                            this.ctx.moveTo(distortedX, distortedY);
+                        const finalX = centerX + dx;
+                        const finalY = centerY + dy;
+
+                        if (i === 0) {
+                            this.ctx.moveTo(finalX, finalY);
                         } else {
-                            this.ctx.lineTo(distortedX, distortedY);
+                            this.ctx.lineTo(finalX, finalY);
                         }
                     }
-                    this.ctx.stroke();
+                };
+
+                for (let y = (centerY % spacing) - spacing; y <= this.canvas.height + spacing; y += spacing) {
+                    drawDistortedLine(0, y, this.canvas.width, y);
+                }
+                for (let x = (centerX % spacing) - spacing; x <= this.canvas.width + spacing; x += spacing) {
+                    drawDistortedLine(x, 0, x, this.canvas.height);
                 }
 
-                // Draw vertical lines with distortion
-                for (let col = 0; col <= cols; col++) {
-                    this.ctx.strokeStyle = this.color;
-                    this.ctx.globalAlpha = 0.3;
-                    this.ctx.beginPath();
+                this.ctx.stroke();
 
-                    for (let row = 0; row <= rows; row++) {
-                        const x = col * gridSize;
-                        const y = row * gridSize;
-
-                        // Calculate distance from center
-                        const dx = x - centerX;
-                        const dy = y - centerY;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-
-                        // Calculate wave amplitude
-                        const wave = Math.sin(dist * waveFreq - this.time * waveSpeed * 2) * waveAmp * Math.exp(-dist * 0.002);
-
-                        // Apply plus-polarization distortion
-                        const distortedX = x - wave * (dx / dist || 0) * 0.5;
-                        const distortedY = y - wave * (dy / dist || 0) * 0.5;
-
-                        if (row === 0) {
-                            this.ctx.moveTo(distortedX, distortedY);
-                        } else {
-                            this.ctx.lineTo(distortedX, distortedY);
-                        }
-                    }
-                    this.ctx.stroke();
-                }
-
-                this.ctx.globalAlpha = 1;
-
-                // Draw source at center
+                const pulse = Math.sin(this.time * 2) * 5 * this.amplitude;
                 this.ctx.fillStyle = this.accent;
                 this.ctx.beginPath();
-                this.ctx.arc(centerX, centerY, 15, 0, Math.PI * 2);
+                this.ctx.arc(centerX, centerY, 12 + pulse, 0, Math.PI * 2);
                 this.ctx.fill();
 
-                // Draw label
-                this.ctx.font = 'bold 16px Inter';
+                this.ctx.font = `bold ${16 * this.scale}px Inter`;
                 this.ctx.fillStyle = this.color;
                 this.ctx.textAlign = 'center';
-                this.ctx.fillText('Spacetime Grid', centerX, this.canvas.height - 20);
+                this.ctx.fillText('Quadrupole plus-polarization (h+)', centerX, this.canvas.height - 20 * this.scale);
             }
         }
 
@@ -747,76 +712,98 @@
                 this.mass = value;
             }
 
-            setSeparation(value) {
+                        setSeparation(value) {
                 this.separation = value;
+                this.r = value; 
             }
 
             draw() {
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-                // Animate inspiral - faster for heavier masses
-                const speed = 0.05 * (this.mass / 30);
-                this.angle += speed;
-                this.separation *= 0.998;
-
-                // Reset if merged
-                if (this.separation < 20) {
-                    this.separation = parseFloat(document.getElementById('merger-sep').value);
-                    this.merged = true;
-                    setTimeout(() => this.merged = false, 500);
+                if (typeof this.phase === 'undefined') {
+                    this.phase = 0;
+                    this.r = this.separation;
+                    this.flashTime = 0;
                 }
 
-                // Calculate black hole positions
-                const r = this.separation / 2;
-                const x1 = this.cx + Math.cos(this.angle) * r;
-                const y1 = this.cy + Math.sin(this.angle) * r;
-                const x2 = this.cx - Math.cos(this.angle) * r;
-                const y2 = this.cy - Math.sin(this.angle) * r;
+                const M = this.mass / 30; 
+                const w = Math.sqrt(1500 * M / Math.pow(this.r, 3));
+                const dr = 0.03 * M * Math.pow(w, 2);
 
-                // Draw gravitational waves - amplitude depends on mass
+                this.phase += w;
+                this.r -= dr;
+
+                if (this.r < 15) {
+                    this.r = parseFloat(document.getElementById('input-merger-sep').value);
+                    this.phase = 0;
+                    this.flashTime = 20; 
+                }
+
                 this.ctx.strokeStyle = this.secondary;
                 this.ctx.lineWidth = 2;
-                const waveCount = 5;
-                const waveAmp = this.mass / 30;
-                for (let i = 0; i < waveCount; i++) {
-                    const radius = (this.time % (waveCount * 30)) + i * 30;
-                    const alpha = (1 - (radius / (waveCount * 30))) * waveAmp;
-                    this.ctx.globalAlpha = alpha * 0.5;
+                const waveSpirals = 2;
+                for (let arm = 0; arm < waveSpirals; arm++) {
                     this.ctx.beginPath();
-                    this.ctx.arc(this.cx, this.cy, radius, 0, Math.PI * 2);
+                    for (let d = 20; d < Math.max(this.canvas.width, this.canvas.height); d += 5) {
+                        const r_wave = d;
+                        const k = 0.05 * Math.pow(this.separation / this.r, 0.5); 
+                        const theta = this.phase - k * r_wave + (arm * Math.PI);
+                        
+                        const alpha = Math.max(0, 1 - (r_wave / 300));
+                        this.ctx.globalAlpha = alpha * 0.5 * (M);
+                        
+                        const px = this.cx + Math.cos(theta) * r_wave;
+                        const py = this.cy + Math.sin(theta) * r_wave;
+                        
+                        if (d === 20) this.ctx.moveTo(px, py);
+                        else this.ctx.lineTo(px, py);
+                    }
                     this.ctx.stroke();
                 }
+
                 this.ctx.globalAlpha = 1;
 
-                // Draw black holes - size depends on mass
-                const bhRadius = 20 + (this.mass - 30) * 0.3 + (120 - this.separation) * 0.1;
+                if (this.flashTime > 0) {
+                    this.ctx.fillStyle = '#ffffff';
+                    this.ctx.globalAlpha = this.flashTime / 20;
+                    this.ctx.beginPath();
+                    this.ctx.arc(this.cx, this.cy, 50 + (20 - this.flashTime)*3, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    this.flashTime--;
+                    this.ctx.globalAlpha = 1;
+                }
 
-                // Black hole 1
+                // Black holes
+                const bhRadius = 15 + (this.mass - 30) * 0.3;
+                
+                const r_orb = this.r / 2;
+                const x1 = this.cx + Math.cos(this.phase) * r_orb;
+                const y1 = this.cy + Math.sin(this.phase) * r_orb;
+                const x2 = this.cx - Math.cos(this.phase) * r_orb;
+                const y2 = this.cy - Math.sin(this.phase) * r_orb;
+
+                this.ctx.strokeStyle = this.color;
+                this.ctx.lineWidth = 1;
+                this.ctx.globalAlpha = 0.2;
+                this.ctx.beginPath();
+                this.ctx.arc(this.cx, this.cy, r_orb, 0, Math.PI * 2);
+                this.ctx.stroke();
+                this.ctx.globalAlpha = 1;
+
                 this.ctx.fillStyle = this.accent;
                 this.ctx.beginPath();
                 this.ctx.arc(x1, y1, bhRadius, 0, Math.PI * 2);
                 this.ctx.fill();
 
-                // Black hole 2
                 this.ctx.fillStyle = this.secondary;
                 this.ctx.beginPath();
                 this.ctx.arc(x2, y2, bhRadius, 0, Math.PI * 2);
                 this.ctx.fill();
 
-                // Draw orbit path
-                this.ctx.strokeStyle = this.color;
-                this.ctx.lineWidth = 1;
-                this.ctx.globalAlpha = 0.3;
-                this.ctx.beginPath();
-                this.ctx.arc(this.cx, this.cy, r, 0, Math.PI * 2);
-                this.ctx.stroke();
-                this.ctx.globalAlpha = 1;
-
-                // Labels
-                this.ctx.font = 'bold 14px Inter';
+                this.ctx.font = `bold ${14 * this.scale}px Inter`;
                 this.ctx.fillStyle = this.color;
                 this.ctx.textAlign = 'center';
-                this.ctx.fillText('Binary Inspiral', this.cx, this.canvas.height - 20);
+                this.ctx.fillText(`Orbiting frequency: ${(w).toFixed(2)} rad/s`, this.cx, this.canvas.height - 20 * this.scale);
             }
         }
 
@@ -840,77 +827,76 @@
                 this.amplitude = value;
             }
 
-            draw() {
+                        draw() {
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
                 this.time += 0.05;
 
-                // Generate gravitational wave signal (chirp)
-                const freq = (this.frequency / 100) * 0.02 + Math.sin(this.time * 0.5) * 0.01;
-                const amplitude = (30 + Math.sin(this.time * 0.3) * 20) * this.amplitude;
-                const signal = Math.sin(this.time * this.frequency / 10) * amplitude;
+                const t_remain = Math.max(0.1, 10 - (this.time % 10)); 
+                const baseFreq = (this.frequency / 100) * Math.pow(10 / t_remain, 3/8) * 0.5;
+                const strainAmp = this.amplitude * Math.pow(10 / t_remain, 1/4) * 0.5;
+                
+                const signal = Math.sin(this.time * baseFreq * 10) * strainAmp;
 
-                // Add to wave data
                 this.waveData.push(signal);
-                if (this.waveData.length > 200) {
+                if (this.waveData.length > 250) {
                     this.waveData.shift();
                 }
 
-                // Draw LIGO-style interferometer arms
-                const armLength = Math.min(this.canvas.width, this.canvas.height) * 0.35;
-                const armWidth = 20;
+                const nominalArmLength = Math.min(this.canvas.width, this.canvas.height) * 0.35;
+                const armWidth = 15;
+                const L1 = nominalArmLength * (1 + signal * 0.1); 
+                const L2 = nominalArmLength * (1 - signal * 0.1); 
 
-                // Horizontal arm
                 this.ctx.fillStyle = this.color;
-                this.ctx.globalAlpha = 0.3;
-                this.ctx.fillRect(this.cx - armLength, this.cy - armWidth/2, armLength, armWidth);
+                this.ctx.globalAlpha = 0.2;
+                
+                this.ctx.fillRect(this.cx - L1, this.cy - armWidth / 2, L1, armWidth);
+                this.ctx.fillRect(this.cx - armWidth / 2, this.cy, armWidth, L2);
 
-                // Vertical arm
-                this.ctx.fillRect(this.cx - armWidth/2, this.cy, armWidth, armLength);
-
-                // Draw laser beams
-                this.ctx.strokeStyle = this.accent;
+                this.ctx.strokeStyle = '#ff3333';
                 this.ctx.lineWidth = 2;
-                this.ctx.globalAlpha = 1;
-
-                // Horizontal beam
+                this.ctx.globalAlpha = 0.8;
                 this.ctx.beginPath();
                 this.ctx.moveTo(this.cx, this.cy);
-                this.ctx.lineTo(this.cx - armLength, this.cy);
+                this.ctx.lineTo(this.cx - L1, this.cy);
                 this.ctx.stroke();
 
-                // Vertical beam
                 this.ctx.beginPath();
                 this.ctx.moveTo(this.cx, this.cy);
-                this.ctx.lineTo(this.cx, this.cy + armLength);
+                this.ctx.lineTo(this.cx, this.cy + L2);
                 this.ctx.stroke();
 
-                // Draw detector at corner
-                this.ctx.fillStyle = this.secondary;
+                const intensity = Math.abs(signal) / (this.amplitude * 2); 
+                this.ctx.fillStyle = `rgba(255, 50, 50, ${0.2 + intensity})`;
                 this.ctx.beginPath();
-                this.ctx.arc(this.cx, this.cy, 15, 0, Math.PI * 2);
+                this.ctx.arc(this.cx, this.cy, 18, 0, Math.PI * 2);
                 this.ctx.fill();
-
-                // Draw wave signal graph at bottom
-                const graphX = 40;
-                const graphY = this.canvas.height - 100;
-                const graphWidth = this.canvas.width - 80;
-                const graphHeight = 60;
-
-                // Draw graph background
+                
                 this.ctx.strokeStyle = this.color;
-                this.ctx.lineWidth = 1;
-                this.ctx.globalAlpha = 0.3;
-                this.ctx.strokeRect(graphX, graphY, graphWidth, graphHeight);
+                this.ctx.lineWidth = 2;
+                this.ctx.beginPath();
+                this.ctx.arc(this.cx, this.cy, 18, 0, Math.PI * 2);
+                this.ctx.stroke();
+
+                const graphX = 40;
+                const graphY = this.canvas.height - 120;
+                const graphWidth = this.canvas.width - 80;
+                const graphHeight = 80;
+
+                this.ctx.globalAlpha = 0.1;
+                this.ctx.fillStyle = this.color;
+                this.ctx.fillRect(graphX, graphY, graphWidth, graphHeight);
                 this.ctx.globalAlpha = 1;
 
-                // Draw signal - scaled by amplitude slider
                 this.ctx.strokeStyle = this.accent;
                 this.ctx.lineWidth = 2;
                 this.ctx.beginPath();
 
                 for (let i = 0; i < this.waveData.length; i++) {
                     const x = graphX + (i / this.waveData.length) * graphWidth;
-                    const y = graphY + graphHeight / 2 + this.waveData[i] * this.amplitude;
+                    const y = graphY + graphHeight / 2 - (this.waveData[i] * 15); 
+                    
+                    if (Math.abs(y - (graphY + graphHeight / 2)) > graphHeight/2) continue;
 
                     if (i === 0) {
                         this.ctx.moveTo(x, y);
@@ -920,11 +906,14 @@
                 }
                 this.ctx.stroke();
 
-                // Labels
-                this.ctx.font = 'bold 14px Inter';
+                this.ctx.font = `${12 * this.scale}px JetBrains Mono`;
                 this.ctx.fillStyle = this.color;
+                this.ctx.textAlign = 'left';
+                this.ctx.fillText('Strain h(t)', graphX + 10, graphY + 20 * this.scale);
+                
+                this.ctx.font = `bold ${14 * this.scale}px Inter`;
                 this.ctx.textAlign = 'center';
-                this.ctx.fillText('LIGO Interferometer', this.cx, graphY - 15);
+                this.ctx.fillText('Differential Arm Length Change: ∆L = h • L', this.cx, graphY - 15 * this.scale);
             }
         }
     </script>
