@@ -157,6 +157,30 @@
                 desc: 'Ripples in spacetime from cosmic events and LIGO detection.',
                 type: 'gravitational-waves',
                 href: 'Concepts/gravitational-waves.html'
+            },
+            {
+                id: 'newtons-laws',
+                title: 'Newton\'s Laws',
+                domain: 'Mechanics',
+                desc: 'The fundamental laws defining the relationship between an object\'s motion and forces.',
+                type: 'newtons-laws',
+                href: 'Concepts/newtons-laws-of-motion.html'
+            },
+            {
+                id: 'conservation-of-energy',
+                title: 'Conservation of Energy',
+                domain: 'Mechanics',
+                desc: 'Energy cannot be created or destroyed, only transformed from one form to another.',
+                type: 'conservation-energy',
+                href: 'Concepts/conservation-of-energy.html'
+            },
+            {
+                id: 'conservation-momentum',
+                title: 'Conservation of Momentum',
+                domain: 'Mechanics',
+                desc: 'The principle that the total momentum of a closed system remains constant.',
+                type: 'conservation-momentum',
+                href: 'Concepts/conservation-of-momentum.html'
             }
         ];
 
@@ -183,6 +207,7 @@
             updateColors() {
                 this.color = getComputedStyle(document.body).getPropertyValue('--text-main').trim();
                 this.accent = getComputedStyle(document.body).getPropertyValue('--accent').trim();
+                this.accentSecondary = getComputedStyle(document.body).getPropertyValue('--accent-secondary').trim() || '#3498db'; // Fallback
             }
 
             resize() {
@@ -363,6 +388,118 @@
             }
         }
 
+        class ConservationEnergyVisual extends BaseVisual {
+            constructor(canvas) {
+                super(canvas);
+                this.angle = 0;
+                this.barW = 15;
+                this.maxH = 40;
+            }
+
+            draw() {
+                if (!this.isVisible) return;
+                this.angle += 0.05;
+
+                // Clear
+                this.clear();
+
+                // Two bars trading height
+                const pe = (Math.sin(this.angle) + 1) / 2; // 0 to 1
+                const ke = 1 - pe;
+
+                const baseY = (this.height / 2) + 25;
+                const cx = this.width / 2;
+
+                // PE Bar
+                this.ctx.fillStyle = this.accent;
+                this.ctx.fillRect(cx - 25, baseY - (pe * this.maxH), this.barW, pe * this.maxH);
+
+                // KE Bar
+                this.ctx.fillStyle = '#3498db'; // Another distinct color
+                this.ctx.fillRect(cx + 10, baseY - (ke * this.maxH), this.barW, ke * this.maxH);
+
+                // Total Energy Line (Constant)
+                this.ctx.strokeStyle = this.color;
+                this.ctx.lineWidth = 1;
+                this.ctx.beginPath();
+                this.ctx.moveTo(cx - 35, baseY - this.maxH);
+                this.ctx.lineTo(cx + 35, baseY - this.maxH);
+                this.ctx.stroke();
+
+                // Base Line
+                this.ctx.beginPath();
+                this.ctx.moveTo(cx - 35, baseY);
+                this.ctx.lineTo(cx + 35, baseY);
+                this.ctx.stroke();
+            }
+        }
+
+        class MomentumVisual extends BaseVisual {
+            constructor(canvas) {
+                super(canvas);
+                this.time = 0;
+                this.m1 = 15;
+                this.m2 = 25;
+                this.x1 = 20;
+                this.x2 = this.width - 20; // Initialize x2 based on canvas width
+                this.v1 = 1.5;
+                this.v2 = -1;
+            }
+
+            // Override resize to re-initialize x2
+            resize() {
+                super.resize();
+                this.x2 = this.width - 20;
+            }
+
+            draw() {
+                if (!this.isVisible) return;
+                this.clear();
+
+                // Update positions
+                this.x1 += this.v1;
+                this.x2 += this.v2;
+
+                // Elastic Collision logic
+                // Check for collision: if balls are overlapping and moving towards each other
+                if (Math.abs(this.x1 - this.x2) <= (this.m1 + this.m2) / 2 && ((this.v1 > 0 && this.v2 < 0) || (this.v1 < 0 && this.v2 > 0))) {
+                    const tempV1 = this.v1;
+                    this.v1 = (this.v1 * (this.m1 - this.m2) + (2 * this.m2 * this.v2)) / (this.m1 + this.m2);
+                    this.v2 = (this.v2 * (this.m2 - this.m1) + (2 * this.m1 * tempV1)) / (this.m1 + this.m2);
+                    // Small adjustment to prevent sticking
+                    this.x1 += this.v1 * 0.5;
+                    this.x2 += this.v2 * 0.5;
+                }
+
+                // Reset when out of bounds
+                if (this.x1 < -50 || this.x2 > this.width + 50 || this.x1 > this.width + 50 || this.x2 < -50) {
+                    this.x1 = 20; this.v1 = 1.5;
+                    this.x2 = this.width - 20; this.v2 = -1;
+                }
+
+                const py = this.height / 2;
+
+                const drawBall = (x, r, colorCode) => {
+                    this.ctx.fillStyle = colorCode;
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, py, r, 0, Math.PI * 2);
+                    this.ctx.fill();
+
+                    // Motion blur / trail hint
+                    this.ctx.globalAlpha = 0.3;
+                    this.ctx.beginPath();
+                    // Draw a slightly offset, faded circle in the direction of motion
+                    const trailOffset = (this.v1 > 0 && x === this.x1) || (this.v2 > 0 && x === this.x2) ? -5 : 5;
+                    this.ctx.arc(x + trailOffset, py, r, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    this.ctx.globalAlpha = 1.0;
+                };
+
+                drawBall(this.x1, this.m1, this.accent);
+                drawBall(this.x2, this.m2, this.accentSecondary);
+            }
+        }
+
         class SlitVisual extends BaseVisual {
             draw() {
                 if (!this.isVisible) return;
@@ -515,6 +652,36 @@
             }
         }
 
+        class NewtonsLawsVisual extends BaseVisual {
+            draw() {
+                if (!this.isVisible) return;
+                this.time += 0.05;
+                this.clear();
+                const cx = this.width / 2;
+                const cy = this.height / 2;
+
+                const offset = Math.abs(Math.sin(this.time)) * 20;
+
+                this.ctx.fillStyle = this.accent;
+                this.ctx.beginPath();
+                this.ctx.roundRect(cx - 15 - offset, cy - 10, 20, 20, 4);
+                this.ctx.fill();
+
+                this.ctx.strokeStyle = this.color;
+                this.ctx.fillStyle = this.color;
+                this.ctx.lineWidth = 2;
+
+                // Arrows pointing outwards
+                this.ctx.beginPath(); this.ctx.moveTo(cx - 20 - offset, cy); this.ctx.lineTo(cx - 30 - offset, cy); this.ctx.stroke();
+
+                this.ctx.beginPath();
+                this.ctx.roundRect(cx + 15 + offset, cy - 10, 20, 20, 4);
+                this.ctx.fill();
+
+                this.ctx.beginPath(); this.ctx.moveTo(cx + 20 + offset, cy); this.ctx.lineTo(cx + 30 + offset, cy); this.ctx.stroke();
+            }
+        }
+
         // ------------------------------------------------------------------
         // APP LOGIC
         // ------------------------------------------------------------------
@@ -599,6 +766,9 @@
                             case 'slit': visual = new SlitVisual(canvas); break;
                             case 'magnetic': visual = new MagneticVisual(canvas); break;
                             case 'gravitational-waves': visual = new GravitationalWavesVisual(canvas); break;
+                            case 'newtons-laws': visual = new NewtonsLawsVisual(canvas); break;
+                            case 'conservation-energy': visual = new ConservationEnergyVisual(canvas); break;
+                            case 'conservation-momentum': visual = new MomentumVisual(canvas); break;
                             default: visual = new BaseVisual(canvas);
                         }
                         visual.resize();

@@ -308,3 +308,7 @@ class MySpecificVisual extends BaseVisual {
         default: visual = new BaseVisual(canvas);
     }
     ```
+
+## 5. Design & Accessibility Standards
+- **Readable and Responsive Simulation Text**: The text labels in the simulations must be clearly readable. Make sure they are responsive for all devices (e.g., using dynamic sizing with `this.scale` for high-DPI displays) and clearly legible across all simulations.
+- **Interactive Controls Placement**: Interactive controls, such as sliders, toggle switches, or buttons, must always be positioned **above** the simulations on mobile and tablet responsive views. Furthermore, both the controls and the canvas simulation they affect should comfortably fit within the viewport of the device simultaneously to prevent the user from having to scroll up and down to observe the simulation changes.

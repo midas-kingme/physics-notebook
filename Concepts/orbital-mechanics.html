@@ -514,17 +514,16 @@
                     this.showSweep = e.target.checked;
                 });
             }
+
             draw() {
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                this.time += 0.01;
+                this.time += 0.015;
 
-                // Ellipse parameters
                 const a = 150 * this.scale;
                 const e = this.e;
                 const b = a * Math.sqrt(1 - e * e);
                 const c = a * e;
 
-                // Draw Sun at one focus
                 const sunX = this.cx + c;
                 const sunY = this.cy;
 
@@ -535,75 +534,72 @@
                 this.ctx.ellipse(this.cx, this.cy, a, b, 0, 0, Math.PI * 2);
                 this.ctx.stroke();
 
-                // Draw Empty Focus
-                const emptyX = this.cx - c;
-                const emptyY = this.cy;
+                // Empty Focus
                 this.ctx.fillStyle = this.color;
                 this.ctx.globalAlpha = 0.3;
                 this.ctx.beginPath();
-                this.ctx.arc(emptyX, emptyY, 3 * this.scale, 0, Math.PI * 2);
+                this.ctx.arc(this.cx - c, this.cy, 3 * this.scale, 0, Math.PI * 2);
                 this.ctx.fill();
                 this.ctx.globalAlpha = 1.0;
 
-                // Calculate Planet Position (Kepler's Equation approx)
-                // Mean anomaly M = n*t
-                // Eccentric anomaly E approx M + e*sin(M) (1st order)
-                // x = a(cos E - e)
-                // y = b sin E
+                // Solve Kepler's Equation: M = E - e*sin(E) using Newton-Raphson
+                const M = this.time % (Math.PI * 2);
+                let E = M;
+                for (let i = 0; i < 5; i++) {
+                    E = E - (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+                }
 
-                const M = this.time;
-                // Simple approx for visualization: speed varies ~ 1/r
-                // Let's just use the parametric form but adjust time step locally? 
-                // Or solve Kepler Eq iteratively? For vis, let's just use the angle directly but non-linearly
+                // True anomaly (nu) & Radius (r)
+                const nu = 2 * Math.atan(Math.sqrt((1 + e) / (1 - e)) * Math.tan(E / 2));
+                const r = a * (1 - e * e) / (1 + e * Math.cos(nu));
 
-                // Better approach for smooth visual:
-                // Use eccentric anomaly E directly as parameter, but increment varies.
-                // dM/dt = n (const). M = E - e sin E. dM = (1 - e cos E) dE. 
-                // dE/dt = n / (1 - e cos E). Use this to update E.
+                const planetX = sunX + r * Math.cos(nu);
+                const planetY = sunY + r * Math.sin(nu);
 
-                if (!this.E) this.E = 0;
-                const dE = 0.02 / (1 - e * Math.cos(this.E));
-                this.E += dE;
-
-                const x = a * (Math.cos(this.E) - e);
-                const y = b * Math.sin(this.E);
-
-                const planetX = this.cx + x;
-                const planetY = this.cy + y;
-
-                // Draw Sweep Area
+                // Sweep Area
                 if (this.showSweep) {
                     this.ctx.fillStyle = this.secondary;
                     this.ctx.globalAlpha = 0.2;
                     this.ctx.beginPath();
                     this.ctx.moveTo(sunX, sunY);
 
-                    const sweepDuration = 30;
-                    const dE_approx = 0.02 / (1 - e * Math.cos(this.E));
-                    for (let i = 0; i <= sweepDuration; i++) {
-                        let tempE = this.E - i * dE_approx;
-                        let tx = a * (Math.cos(tempE) - e);
-                        let ty = b * Math.sin(tempE);
-                        this.ctx.lineTo(this.cx + tx, this.cy + ty);
+                    const sweepM = 0.5;
+                    for (let step = 0; step <= 20; step++) {
+                        let tempM = M - sweepM * (step / 20);
+                        let tempE = tempM;
+                        for (let i = 0; i < 5; i++) tempE = tempE - (tempE - e * Math.sin(tempE) - tempM) / (1 - e * Math.cos(tempE));
+                        let tempNu = 2 * Math.atan(Math.sqrt((1 + e) / (1 - e)) * Math.tan(tempE / 2));
+                        let tempR = a * (1 - e * e) / (1 + e * Math.cos(tempNu));
+                        this.ctx.lineTo(sunX + tempR * Math.cos(tempNu), sunY + tempR * Math.sin(tempNu));
                     }
-                    this.ctx.lineTo(planetX, planetY);
                     this.ctx.closePath();
                     this.ctx.fill();
                     this.ctx.globalAlpha = 1.0;
                 }
 
-                // Draw Sun
+                // Velocity Vector
+                const ndt = 40;
+                const dEdt = 1 / (1 - e * Math.cos(E));
+                const vx = -a * Math.sin(E) * dEdt;
+                const vy = b * Math.cos(E) * dEdt;
+
+                this.ctx.strokeStyle = this.accent;
+                this.ctx.lineWidth = 2 * this.scale;
+                if (typeof drawArrow === "function") {
+                    drawArrow(this.ctx, planetX, planetY, planetX + vx * ndt * this.scale / a, planetY + vy * ndt * this.scale / a, 6 * this.scale);
+                }
+
+                // Sun
                 this.ctx.fillStyle = this.accent;
                 this.ctx.beginPath();
                 this.ctx.arc(sunX, sunY, 15 * this.scale, 0, Math.PI * 2);
                 this.ctx.fill();
 
-                // Draw Planet
+                // Planet
                 this.ctx.fillStyle = this.color;
                 this.ctx.beginPath();
                 this.ctx.arc(planetX, planetY, 8 * this.scale, 0, Math.PI * 2);
                 this.ctx.fill();
-
             }
         }
 
@@ -613,43 +609,84 @@
                 this.dist = 150;
                 this.m1 = 40;
                 this.m2 = 20;
+                this.cacheCanvas = document.createElement('canvas');
+                this.cacheCanvas.width = 0;
 
-                // Controls
                 const m1Input = document.getElementById('input-m1');
                 const m2Input = document.getElementById('input-m2');
                 const rInput = document.getElementById('input-r');
 
-                m1Input.addEventListener('input', (e) => {
+                if (m1Input) m1Input.addEventListener('input', (e) => {
                     this.m1 = parseInt(e.target.value);
                     document.getElementById('val-m1').textContent = this.m1;
+                    this.updateCache = true;
                 });
-                m2Input.addEventListener('input', (e) => {
+                if (m2Input) m2Input.addEventListener('input', (e) => {
                     this.m2 = parseInt(e.target.value);
                     document.getElementById('val-m2').textContent = this.m2;
+                    this.updateCache = true;
                 });
-                rInput.addEventListener('input', (e) => {
+                if (rInput) rInput.addEventListener('input', (e) => {
                     this.dist = parseInt(e.target.value);
                     document.getElementById('val-r').textContent = this.dist;
+                    this.updateCache = true;
                 });
+                this.updateCache = true;
+            }
+
+            resize() {
+                super.resize();
+                if (this.cacheCanvas) {
+                    this.cacheCanvas.width = this.canvas.width;
+                    this.cacheCanvas.height = this.canvas.height;
+                    this.updateCache = true;
+                }
             }
 
             draw() {
-                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-                // Use manual distance control
                 const dist = this.dist;
-
                 const p1x = this.cx - dist * this.scale / 2;
                 const p2x = this.cx + dist * this.scale / 2;
 
-                // Force magnitude
-                // F ~ m1*m2 / r^2
-                // Scaling constant for visualization
+                if (this.updateCache && this.cacheCanvas.width > 0) {
+                    const ctx = this.cacheCanvas.getContext('2d');
+                    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                    const resolution = 6 * this.scale;
+                    ctx.fillStyle = this.secondary;
+
+                    for (let x = 0; x < this.canvas.width; x += resolution) {
+                        for (let y = 0; y < this.canvas.height; y += resolution) {
+                            const dx1 = x - p1x;
+                            const dy1 = y - this.cy;
+                            const r1 = Math.sqrt(dx1 * dx1 + dy1 * dy1) || 1;
+
+                            const dx2 = x - p2x;
+                            const dy2 = y - this.cy;
+                            const r2 = Math.sqrt(dx2 * dx2 + dy2 * dy2) || 1;
+
+                            const potential = (this.m1 / r1) + (this.m2 / r2);
+                            const intensity = Math.min(potential * 3, 1.0);
+
+                            if (intensity > 0.05) {
+                                ctx.globalAlpha = intensity * 0.4;
+                                ctx.fillRect(x, y, resolution, resolution);
+                            }
+                        }
+                    }
+                    ctx.globalAlpha = 1.0;
+                    this.updateCache = false;
+                }
+
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                if (this.cacheCanvas.width > 0) {
+                    this.ctx.drawImage(this.cacheCanvas, 0, 0);
+                }
+
                 const G_vis = 5000;
                 const force = G_vis * (this.m1 * this.m2) / (dist * dist);
                 const vecLen = Math.min(force * this.scale, 120 * this.scale);
 
-                // Draw Bodies
                 this.ctx.fillStyle = this.accent;
                 this.ctx.beginPath();
                 this.ctx.arc(p1x, this.cy, Math.sqrt(this.m1) * 3 * this.scale, 0, Math.PI * 2);
@@ -660,23 +697,17 @@
                 this.ctx.arc(p2x, this.cy, Math.sqrt(this.m2) * 3 * this.scale, 0, Math.PI * 2);
                 this.ctx.fill();
 
-                // Draw Vectors
                 this.ctx.strokeStyle = this.secondary;
                 this.ctx.lineWidth = 3 * this.scale;
+                if (typeof drawArrow === "function") {
+                    drawArrow(this.ctx, p1x, this.cy, p1x + vecLen, this.cy, 10 * this.scale);
+                    drawArrow(this.ctx, p2x, this.cy, p2x - vecLen, this.cy, 10 * this.scale);
+                }
 
-                // Arrow 1 (on p1 towards p2)
-                drawArrow(this.ctx, p1x, this.cy, p1x + vecLen, this.cy, 10 * this.scale);
-
-                // Arrow 2 (on p2 towards p1)
-                drawArrow(this.ctx, p2x, this.cy, p2x - vecLen, this.cy, 10 * this.scale);
-
-                // Label
                 this.ctx.fillStyle = this.color;
-                this.ctx.font = `14px Inter`;
+                this.ctx.font = `${14 * this.scale}px Inter`;
                 this.ctx.textAlign = "center";
-                this.ctx.fillText(`r = ${Math.round(dist)}`, this.cx, this.cy - (Math.sqrt(this.m1) * 3 * this.scale) - 10);
-
-                // Force Label
+                this.ctx.fillText(`r = ${Math.round(dist)}`, this.cx, this.cy - (Math.sqrt(this.m1) * 3 * this.scale) - 10 * this.scale);
                 this.ctx.fillStyle = this.secondary;
                 this.ctx.fillText(`F ∝ ${Math.round(force)}`, this.cx, this.cy + 30 * this.scale);
             }
@@ -689,7 +720,6 @@
             ctx.lineTo(x2, y2);
             ctx.stroke();
 
-            // Head
             ctx.beginPath();
             ctx.moveTo(x2, y2);
             ctx.lineTo(x2 - headLen * Math.cos(angle - Math.PI / 6), y2 - headLen * Math.sin(angle - Math.PI / 6));
@@ -702,81 +732,98 @@
         class OrbitSimulation extends BaseVisual {
             constructor(id) {
                 super(id);
+                this.G = 300;
                 this.reset();
 
-                // Controls
-                document.getElementById('input-v').addEventListener('input', (e) => {
-                    document.getElementById('val-v').innerText = e.target.value;
+                const vInput = document.getElementById('input-v');
+                const mInput = document.getElementById('input-m');
+                const btnReset = document.getElementById('btn-reset');
+                const btnClear = document.getElementById('btn-clear-trail');
+
+                if (vInput) vInput.addEventListener('input', (e) => {
+                    document.getElementById('val-v').innerText = parseFloat(e.target.value).toFixed(1);
                     this.reset();
                 });
-                document.getElementById('input-m').addEventListener('input', (e) => {
-                    document.getElementById('val-m').innerText = e.target.value;
+                if (mInput) mInput.addEventListener('input', (e) => {
+                    document.getElementById('val-m').innerText = parseFloat(e.target.value).toFixed(1);
                     this.reset();
                 });
-                document.getElementById('btn-reset').addEventListener('click', () => this.reset());
-                const clearBtn = document.getElementById('btn-clear-trail');
-                if (clearBtn) clearBtn.addEventListener('click', () => { this.path = []; });
+                if (btnReset) btnReset.addEventListener('click', () => this.reset());
+                if (btnClear) btnClear.addEventListener('click', () => { this.path = []; });
             }
 
             reset() {
-                // Initial State
+                const vx_input = parseFloat(document.getElementById('input-v')?.value || 3.0);
+                const m_input = parseFloat(document.getElementById('input-m')?.value || 1.0);
+
                 this.planet = {
                     x: 0,
-                    y: -100, // starts above sun
-                    vx: parseFloat(document.getElementById('input-v').value),
+                    y: -150,
+                    vx: vx_input * 2,
                     vy: 0,
-                    mass: parseFloat(document.getElementById('input-m').value)
+                    mass: m_input
                 };
                 this.sun = {
                     x: 0,
                     y: 0,
-                    mass: 50 // Fixed large mass
+                    mass: 50
                 };
                 this.path = [];
+
+                const rSq = Math.max(1, (this.sun.x - this.planet.x) ** 2 + (this.sun.y - this.planet.y) ** 2);
+                const r = Math.sqrt(rSq);
+                const F = (this.G * this.sun.mass) / rSq;
+                this.planet.ax = F * (this.sun.x - this.planet.x) / r;
+                this.planet.ay = F * (this.sun.y - this.planet.y) / r;
             }
 
             draw() {
-                // Physics Update
-                // F = G M m / r^2
-                // a = F / m = G M / r^2
-                const G = 5.0; // Scaled G
-                const dt = 0.5;
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-                for (let i = 0; i < 4; i++) { // Sub-steps for stability
-                    const dx = this.sun.x - this.planet.x;
-                    const dy = this.sun.y - this.planet.y;
-                    const distSq = dx * dx + dy * dy;
+                const dt = 0.05;
+                const steps = 10;
+
+                for (let i = 0; i < steps; i++) {
+                    const p = this.planet;
+
+                    p.x += p.vx * dt + 0.5 * p.ax * dt * dt;
+                    p.y += p.vy * dt + 0.5 * p.ay * dt * dt;
+
+                    const dx = this.sun.x - p.x;
+                    const dy = this.sun.y - p.y;
+                    const distSq = Math.max(1, dx * dx + dy * dy);
                     const dist = Math.sqrt(distSq);
 
-                    if (dist < 10) { // Crash
-                        this.planet.vx = 0; this.planet.vy = 0;
-                    } else {
-                        const acc = (G * this.sun.mass) / distSq;
-                        const ax = acc * (dx / dist);
-                        const ay = acc * (dy / dist);
-
-                        this.planet.vx += ax * dt;
-                        this.planet.vy += ay * dt;
-                        this.planet.x += this.planet.vx * dt;
-                        this.planet.y += this.planet.vy * dt;
+                    if (dist < 15) {
+                        p.vx *= 0.8;
+                        p.vy *= 0.8;
+                        continue;
                     }
+
+                    const F = (this.G * this.sun.mass) / distSq;
+                    const new_ax = F * (dx / dist);
+                    const new_ay = F * (dy / dist);
+
+                    p.vx += 0.5 * (p.ax + new_ax) * dt;
+                    p.vy += 0.5 * (p.ay + new_ay) * dt;
+
+                    p.ax = new_ax;
+                    p.ay = new_ay;
                 }
 
-                // Store Path
-                if (this.path.length === 0 || Math.hypot(this.path[this.path.length - 1].x - this.planet.x, this.path[this.path.length - 1].y - this.planet.y) > 2) {
+                if (this.path.length === 0 || Math.hypot(this.path[this.path.length - 1].x - this.planet.x, this.path[this.path.length - 1].y - this.planet.y) > 3) {
                     this.path.push({ x: this.planet.x, y: this.planet.y });
-                    if (this.path.length > 500) this.path.shift();
+                    if (this.path.length > 700) this.path.shift();
                 }
 
-                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
                 const sunScreenX = this.cx + this.sun.x * this.scale;
                 const sunScreenY = this.cy + this.sun.y * this.scale;
                 const pScreenX = this.cx + this.planet.x * this.scale;
                 const pScreenY = this.cy + this.planet.y * this.scale;
 
-                // Draw Path
                 this.ctx.strokeStyle = this.color;
                 this.ctx.globalAlpha = 0.3;
+                this.ctx.lineWidth = 1 * this.scale;
                 this.ctx.beginPath();
                 this.path.forEach((p, i) => {
                     const px = this.cx + p.x * this.scale;
@@ -786,18 +833,22 @@
                 this.ctx.stroke();
                 this.ctx.globalAlpha = 1.0;
 
-                // Draw Sun
+                const vScale = 3 * this.scale;
+                this.ctx.strokeStyle = this.accent;
+                this.ctx.lineWidth = 2 * this.scale;
+                if (typeof drawArrow === "function") {
+                    drawArrow(this.ctx, pScreenX, pScreenY, pScreenX + this.planet.vx * vScale, pScreenY + this.planet.vy * vScale, 6 * this.scale);
+                }
+
                 this.ctx.fillStyle = this.accent;
                 this.ctx.beginPath();
                 this.ctx.arc(sunScreenX, sunScreenY, 20 * this.scale, 0, Math.PI * 2);
                 this.ctx.fill();
-                // Sun Glow
                 this.ctx.shadowBlur = 20;
                 this.ctx.shadowColor = this.accent;
                 this.ctx.fill();
                 this.ctx.shadowBlur = 0;
 
-                // Draw Planet
                 this.ctx.fillStyle = this.secondary;
                 this.ctx.beginPath();
                 this.ctx.arc(pScreenX, pScreenY, (5 + this.planet.mass) * this.scale, 0, Math.PI * 2);

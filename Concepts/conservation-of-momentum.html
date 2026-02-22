@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conservation of Momentum • Physics Notebook</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/article.css">
+    <style>
+        /* AI Links */
+        .ai-links {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1rem;
+            align-items: center;
+        }
+
+        .ai-label {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-right: 0.2rem;
+            font-weight: 500;
+        }
+
+        .ai-btn {
+            background: var(--bg-color);
+            border: 1px solid var(--line-subtle);
+            color: var(--text-muted);
+            min-width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0 8px;
+        }
+
+        .ai-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* Mobile specific adjustments to ensure controls are stacked above canvas */
+        @media screen and (max-width: 900px) {
+            .split-layout {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .content-col {
+                order: 1;
+                /* Content and controls on top */
+            }
+
+            .visual-col {
+                order: 2;
+                /* Canvas on bottom */
+                min-height: 400px;
+            }
+
+            .sim-controls {
+                margin-top: 2rem;
+                margin-bottom: 2rem;
+                /* Add space below controls before the canvas */
+            }
+        }
+    </style>
+
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Theme Init -->
+    <script>
+        const savedTheme = localStorage.getItem('physics-notebook-theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        document.body && document.body.setAttribute('data-theme', savedTheme);
+    </script>
+
+    <!-- Libs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <nav class="sticky">
+        <div class="nav-bg"></div>
+        <a href="../index.html" class="logo">
+            <i data-lucide="arrow-left" width="16"></i>
+            Library
+        </a>
+        <button id="themeBtn">
+            <i data-lucide="moon" width="16"></i> Theme
+        </button>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="text-reveal-wrapper">
+            <h1 class="hero-title">Conservation of<br>Momentum</h1>
+            <p style="margin-top: 2rem; font-size: 1.4rem; max-width: 40ch;">
+                In a closed system with no external forces, the total momentum remains absolutely constant,
+                no matter how the internal parts interact or collide.
+            </p>
+        </div>
+    </section>
+
+    <!-- CHAPTER 1: ELASTIC COLLISIONS -->
+    <section>
+        <div class="split-layout">
+            <div class="content-col">
+                <h3 class="section-label" style="color: var(--accent);">01. Linear Momentum</h3>
+                <h2>Elastic Collisions</h2>
+                <p>
+                    Momentum ($\vec{p}$) is the product of an object's mass and velocity. In a perfectly elastic
+                    collision,
+                    objects bounce off each other without losing any kinetic energy. Both total momentum and total
+                    kinetic energy are conserved.
+                </p>
+                <div class="math-block">
+                    $$\vec{p} = m\vec{v} \quad \rightarrow \quad \sum \vec{p}_{initial} = \sum \vec{p}_{final}$$
+                </div>
+
+                <!-- ETU CARD -->
+                <div class="etu-card">
+                    <span class="etu-tag">Real World System</span>
+                    <h4 style="margin-bottom:0.5rem;">Newton's Cradle</h4>
+                    <p style="font-size: 0.95rem; margin-bottom:0;">
+                        A classic desk toy where lifting and releasing one ball causes exactly one ball on the opposite
+                        end to swing outward.
+                        The momentum transfers instantly through the rigid steel spheres, perfectly preserving both $m$
+                        and $v$.
+                    </p>
+                </div>
+
+                <!-- AI LINKS -->
+                <div class="ai-links">
+                    <span class="ai-label">Ask AI:</span>
+                    <button onclick="openAI('elastic_momentum', 'perplexity')" class="ai-btn"
+                        title="Ask Perplexity"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M22.3977 7.0896h-2.3106V.0676l-7.5094 6.3542V.1577h-1.1554v6.1966L4.4904 0v7.0896H1.6023v10.3976h2.8882V24l6.932-6.3591v6.2005h1.1554v-6.0469l6.9318 6.1807v-6.4879h2.8882V7.0896zm-3.4657-4.531v4.531h-5.355l5.355-4.531zm-13.2862.0676 4.8691 4.4634H5.6458V2.6262zM2.7576 16.332V8.245h7.8476l-6.1149 6.1147v1.9723H2.7576zm2.8882 5.0404v-3.8852h.0001v-2.6488l5.7763-5.7764v7.0111l-5.7764 5.2993zm12.7086.0248-5.7766-5.1509V9.0618l5.7766 5.7766v6.5588zm2.8882-5.0652h-1.733v-1.9723L13.3948 8.245h7.8478v8.087z" />
+                        </svg></button>
+                    <button onclick="openAI('elastic_momentum', 'gemini')" class="ai-btn" title="Ask Gemini"><svg
+                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81" />
+                        </svg></button>
+                    <button onclick="openAI('elastic_momentum', 'chatgpt')" class="ai-btn" title="Ask ChatGPT"><svg
+                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
+                        </svg></button>
+                    <button onclick="openAI('elastic_momentum', 'claude')" class="ai-btn" title="Ask Claude"><svg
+                            xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision"
+                            text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd"
+                            clip-rule="evenodd" viewBox="0 0 512 509.64">
+                            <path fill="#D77655"
+                                d="M115.612 0h280.775C459.974 0 512 52.026 512 115.612v278.415c0 63.587-52.026 115.612-115.613 115.612H115.612C52.026 509.639 0 457.614 0 394.027V115.612C0 52.026 52.026 0 115.612 0z" />
+                            <path fill="#FCF2EE" fill-rule="nonzero"
+                                d="M142.27 316.619l73.655-41.326 1.238-3.589-1.238-1.996-3.589-.001-12.31-.759-42.084-1.138-36.498-1.516-35.361-1.896-8.897-1.895-8.34-10.995.859-5.484 7.482-5.03 10.717.935 23.683 1.617 35.537 2.452 25.782 1.517 38.193 3.968h6.064l.86-2.451-2.073-1.517-1.618-1.517-36.776-24.922-39.81-26.338-20.852-15.166-11.273-7.683-5.687-7.204-2.451-15.721 10.237-11.273 13.75.935 3.513.936 13.928 10.716 29.749 23.027 38.848 28.612 5.687 4.727 2.275-1.617.278-1.138-2.553-4.271-21.13-38.193-22.546-38.848-10.035-16.101-2.654-9.655c-.935-3.968-1.617-7.304-1.617-11.374l11.652-15.823 6.445-2.073 15.545 2.073 6.547 5.687 9.655 22.092 15.646 34.78 24.265 47.291 7.103 14.028 3.791 12.992 1.416 3.968 2.449-.001v-2.275l1.997-26.641 3.69-32.707 3.589-42.084 1.239-11.854 5.863-14.206 11.652-7.683 9.099 4.348 7.482 10.716-1.036 6.926-4.449 28.915-8.72 45.294-5.687 30.331h3.313l3.792-3.791 15.342-20.372 25.782-32.227 11.374-12.789 13.27-14.129 8.517-6.724 16.1-.001 11.854 17.617-5.307 18.199-16.581 21.029-13.75 17.819-19.716 26.54-12.309 21.231 1.138 1.694 2.932-.278 44.536-9.479 24.062-4.347 28.714-4.928 12.992 6.066 1.416 6.167-5.106 12.613-30.71 7.583-36.018 7.204-53.636 12.689-.657.48.758.935 24.164 2.275 10.337.556h25.301l47.114 3.514 12.309 8.139 7.381 9.959-1.238 7.583-18.957 9.655-25.579-6.066-59.702-14.205-20.474-5.106-2.83-.001v1.694l17.061 16.682 31.266 28.233 39.152 36.397 1.997 8.999-5.03 7.102-5.307-.758-34.401-25.883-13.27-11.651-30.053-25.302-1.996-.001v2.654l6.926 10.136 36.574 54.975 1.895 16.859-2.653 5.485-9.479 3.311-10.414-1.895-21.408-30.054-22.092-33.844-17.819-30.331-2.173 1.238-10.515 113.261-4.929 5.788-11.374 4.348-9.478-7.204-5.03-11.652 5.03-23.027 6.066-30.052 4.928-23.886 4.449-29.674 2.654-9.858-.177-.657-2.173.278-22.37 30.71-34.021 45.977-26.919 28.815-6.445 2.553-11.173-5.789 1.037-10.337 6.243-9.2 37.257-47.392 22.47-29.371 14.508-16.961-.101-2.451h-.859l-98.954 64.251-17.618 2.275-7.583-7.103.936-11.652 3.589-3.791 29.749-20.474-.101.102.024.101z" />
+                        </svg></button>
+                    <button onclick="openAI('elastic_momentum', 'grok')" class="ai-btn" title="Ask Grok"><svg
+                            xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision"
+                            text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd"
+                            clip-rule="evenodd" viewBox="0 0 512 509.641">
+                            <path
+                                d="M115.612 0h280.776C459.975 0 512 52.026 512 115.612v278.416c0 63.587-52.025 115.613-115.612 115.613H115.612C52.026 509.641 0 457.615 0 394.028V115.612C0 52.026 52.026 0 115.612 0z" />
+                            <path fill="#fff"
+                                d="M213.235 306.019l178.976-180.002v.169l51.695-51.763c-.924 1.32-1.86 2.605-2.785 3.89-39.281 54.164-58.46 80.649-43.07 146.922l-.09-.101c10.61 45.11-.744 95.137-37.398 131.836-46.216 46.306-120.167 56.611-181.063 14.928l42.462-19.675c38.863 15.278 81.392 8.57 111.947-22.03 30.566-30.6 37.432-75.159 22.065-112.252-2.92-7.025-11.67-8.795-17.792-4.263l-124.947 92.341zm-25.786 22.437l-.033.034L68.094 435.217c7.565-10.429 16.957-20.294 26.327-30.149 26.428-27.803 52.653-55.359 36.654-94.302-21.422-52.112-8.952-113.177 30.724-152.898 41.243-41.254 101.98-51.661 152.706-30.758 11.23 4.172 21.016 10.114 28.638 15.639l-42.359 19.584c-39.44-16.563-84.629-5.299-112.207 22.313-37.298 37.308-44.84 102.003-1.128 143.81z" />
+                        </svg></button>
+                </div>
+
+                <div class="sim-controls">
+                    <div style="margin-bottom: 0.5rem;">
+                        <button id="btn-col1"
+                            style="width: 100%; padding:12px; background:var(--accent); color:white; border:none; border-radius:4px; font-weight:600; cursor:pointer;">Start
+                            Simulation</button>
+                    </div>
+
+                    <h5 style="margin-bottom: 0; color:var(--text-main);">Cart A (Left)</h5>
+                    <div class="slider-group">
+                        <label>Mass <span id="val-m1">1</span> kg</label>
+                        <input type="range" id="input-m1" min="0.5" max="3" step="0.5" value="1">
+                    </div>
+                    <div class="slider-group">
+                        <label>Velocity <span id="val-v1">2</span> m/s</label>
+                        <input type="range" id="input-v1" min="0" max="5" step="0.5" value="2">
+                    </div>
+
+                    <h5 style="margin-bottom: 0; color:var(--text-main); margin-top: 1rem;">Cart B (Right)</h5>
+                    <div class="slider-group">
+                        <label>Mass <span id="val-m2">1</span> kg</label>
+                        <input type="range" id="input-m2" min="0.5" max="3" step="0.5" value="1">
+                    </div>
+                    <div class="slider-group">
+                        <label>Velocity <span id="val-v2">-1</span> m/s</label>
+                        <input type="range" id="input-v2" min="-5" max="0" step="0.5" value="-1">
+                    </div>
+                </div>
+            </div>
+            <div class="visual-col">
+                <canvas id="canvas-elastic" style="background: rgba(0,0,0,0.02);"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- CHAPTER 2: INELASTIC COLLISIONS & EXPLOSIONS -->
+    <section>
+        <div class="split-layout">
+            <div class="content-col">
+                <h3 class="section-label" style="color: var(--accent);">02. Internal Forces</h3>
+                <h2>Explosions & Inelasticity</h2>
+                <p>
+                    Momentum is always conserved in a closed system, even if the kinetic energy is not.
+                    In an explosion (or objects pushing apart), a single object at rest ($p=0$) splits into pieces whose
+                    combined
+                    momentums must rigidly cancel each other out to remain zero.
+                </p>
+                <div class="math-block">
+                    $$\vec{p}_{initial} = 0 \quad \rightarrow \quad m_1\vec{v}_1 + m_2\vec{v}_2 = 0 \quad \text{thus}
+                    \quad \vec{v}_1 = -\frac{m_2}{m_1}\vec{v}_2$$
+                </div>
+
+                <!-- ETU CARD -->
+                <div class="etu-card">
+                    <span class="etu-tag">Real World System</span>
+                    <h4 style="margin-bottom:0.5rem;">Recoil of a Cannon</h4>
+                    <p style="font-size: 0.95rem; margin-bottom:0;">
+                        When a cannon fires a cannonball forward, the heavy cannon physically recoils backward.
+                        Because the initial momentum was zero, the forward momentum of the light but incredibly fast
+                        cannonball
+                        is exactly equal and opposite to the backward momentum of the massive, slower cannon.
+                    </p>
+                </div>
+
+                <!-- AI LINKS -->
+                <div class="ai-links">
+                    <span class="ai-label">Ask AI:</span>
+                    <button onclick="openAI('explosion_momentum', 'perplexity')" class="ai-btn"
+                        title="Ask Perplexity"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M22.3977 7.0896h-2.3106V.0676l-7.5094 6.3542V.1577h-1.1554v6.1966L4.4904 0v7.0896H1.6023v10.3976h2.8882V24l6.932-6.3591v6.2005h1.1554v-6.0469l6.9318 6.1807v-6.4879h2.8882V7.0896zm-3.4657-4.531v4.531h-5.355l5.355-4.531zm-13.2862.0676 4.8691 4.4634H5.6458V2.6262zM2.7576 16.332V8.245h7.8476l-6.1149 6.1147v1.9723H2.7576zm2.8882 5.0404v-3.8852h.0001v-2.6488l5.7763-5.7764v7.0111l-5.7764 5.2993zm12.7086.0248-5.7766-5.1509V9.0618l5.7766 5.7766v6.5588zm2.8882-5.0652h-1.733v-1.9723L13.3948 8.245h7.8478v8.087z" />
+                        </svg></button>
+                    <button onclick="openAI('explosion_momentum', 'gemini')" class="ai-btn" title="Ask Gemini"><svg
+                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81" />
+                        </svg></button>
+                    <button onclick="openAI('explosion_momentum', 'chatgpt')" class="ai-btn" title="Ask ChatGPT"><svg
+                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
+                        </svg></button>
+                    <button onclick="openAI('explosion_momentum', 'claude')" class="ai-btn" title="Ask Claude"><svg
+                            xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision"
+                            text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd"
+                            clip-rule="evenodd" viewBox="0 0 512 509.64">
+                            <path fill="#D77655"
+                                d="M115.612 0h280.775C459.974 0 512 52.026 512 115.612v278.415c0 63.587-52.026 115.612-115.613 115.612H115.612C52.026 509.639 0 457.614 0 394.027V115.612C0 52.026 52.026 0 115.612 0z" />
+                            <path fill="#FCF2EE" fill-rule="nonzero"
+                                d="M142.27 316.619l73.655-41.326 1.238-3.589-1.238-1.996-3.589-.001-12.31-.759-42.084-1.138-36.498-1.516-35.361-1.896-8.897-1.895-8.34-10.995.859-5.484 7.482-5.03 10.717.935 23.683 1.617 35.537 2.452 25.782 1.517 38.193 3.968h6.064l.86-2.451-2.073-1.517-1.618-1.517-36.776-24.922-39.81-26.338-20.852-15.166-11.273-7.683-5.687-7.204-2.451-15.721 10.237-11.273 13.75.935 3.513.936 13.928 10.716 29.749 23.027 38.848 28.612 5.687 4.727 2.275-1.617.278-1.138-2.553-4.271-21.13-38.193-22.546-38.848-10.035-16.101-2.654-9.655c-.935-3.968-1.617-7.304-1.617-11.374l11.652-15.823 6.445-2.073 15.545 2.073 6.547 5.687 9.655 22.092 15.646 34.78 24.265 47.291 7.103 14.028 3.791 12.992 1.416 3.968 2.449-.001v-2.275l1.997-26.641 3.69-32.707 3.589-42.084 1.239-11.854 5.863-14.206 11.652-7.683 9.099 4.348 7.482 10.716-1.036 6.926-4.449 28.915-8.72 45.294-5.687 30.331h3.313l3.792-3.791 15.342-20.372 25.782-32.227 11.374-12.789 13.27-14.129 8.517-6.724 16.1-.001 11.854 17.617-5.307 18.199-16.581 21.029-13.75 17.819-19.716 26.54-12.309 21.231 1.138 1.694 2.932-.278 44.536-9.479 24.062-4.347 28.714-4.928 12.992 6.066 1.416 6.167-5.106 12.613-30.71 7.583-36.018 7.204-53.636 12.689-.657.48.758.935 24.164 2.275 10.337.556h25.301l47.114 3.514 12.309 8.139 7.381 9.959-1.238 7.583-18.957 9.655-25.579-6.066-59.702-14.205-20.474-5.106-2.83-.001v1.694l17.061 16.682 31.266 28.233 39.152 36.397 1.997 8.999-5.03 7.102-5.307-.758-34.401-25.883-13.27-11.651-30.053-25.302-1.996-.001v2.654l6.926 10.136 36.574 54.975 1.895 16.859-2.653 5.485-9.479 3.311-10.414-1.895-21.408-30.054-22.092-33.844-17.819-30.331-2.173 1.238-10.515 113.261-4.929 5.788-11.374 4.348-9.478-7.204-5.03-11.652 5.03-23.027 6.066-30.052 4.928-23.886 4.449-29.674 2.654-9.858-.177-.657-2.173.278-22.37 30.71-34.021 45.977-26.919 28.815-6.445 2.553-11.173-5.789 1.037-10.337 6.243-9.2 37.257-47.392 22.47-29.371 14.508-16.961-.101-2.451h-.859l-98.954 64.251-17.618 2.275-7.583-7.103.936-11.652 3.589-3.791 29.749-20.474-.101.102.024.101z" />
+                        </svg></button>
+                    <button onclick="openAI('explosion_momentum', 'grok')" class="ai-btn" title="Ask Grok"><svg
+                            xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision"
+                            text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd"
+                            clip-rule="evenodd" viewBox="0 0 512 509.641">
+                            <path
+                                d="M115.612 0h280.776C459.975 0 512 52.026 512 115.612v278.416c0 63.587-52.025 115.613-115.612 115.613H115.612C52.026 509.641 0 457.615 0 394.028V115.612C0 52.026 52.026 0 115.612 0z" />
+                            <path fill="#fff"
+                                d="M213.235 306.019l178.976-180.002v.169l51.695-51.763c-.924 1.32-1.86 2.605-2.785 3.89-39.281 54.164-58.46 80.649-43.07 146.922l-.09-.101c10.61 45.11-.744 95.137-37.398 131.836-46.216 46.306-120.167 56.611-181.063 14.928l42.462-19.675c38.863 15.278 81.392 8.57 111.947-22.03 30.566-30.6 37.432-75.159 22.065-112.252-2.92-7.025-11.67-8.795-17.792-4.263l-124.947 92.341zm-25.786 22.437l-.033.034L68.094 435.217c7.565-10.429 16.957-20.294 26.327-30.149 26.428-27.803 52.653-55.359 36.654-94.302-21.422-52.112-8.952-113.177 30.724-152.898 41.243-41.254 101.98-51.661 152.706-30.758 11.23 4.172 21.016 10.114 28.638 15.639l-42.359 19.584c-39.44-16.563-84.629-5.299-112.207 22.313-37.298 37.308-44.84 102.003-1.128 143.81z" />
+                        </svg></button>
+                </div>
+
+                <div class="sim-controls">
+                    <div style="margin-bottom: 0.5rem;">
+                        <button id="btn-col2"
+                            style="width: 100%; padding:12px; background:var(--accent); color:white; border:none; border-radius:4px; font-weight:600; cursor:pointer;">Explode!</button>
+                    </div>
+
+                    <h5 style="margin-bottom: 0; color:var(--text-main);">Explosive Force</h5>
+                    <div class="slider-group">
+                        <label>Energy <span id="val-E">20</span> J</label>
+                        <input type="range" id="input-E" min="5" max="50" step="5" value="20">
+                    </div>
+
+                    <h5 style="margin-bottom: 0; color:var(--text-main); margin-top: 1rem;">Fragment Masses</h5>
+                    <div class="slider-group">
+                        <label>Left Fragment ($m_1$) <span id="val-m1-e">1</span> kg</label>
+                        <input type="range" id="input-m1-e" min="0.5" max="5" step="0.5" value="1">
+                    </div>
+                    <div class="slider-group">
+                        <label>Right Fragment ($m_2$) <span id="val-m2-e">3</span> kg</label>
+                        <input type="range" id="input-m2-e" min="0.5" max="5" step="0.5" value="3">
+                    </div>
+                </div>
+            </div>
+            <div class="visual-col">
+                <canvas id="canvas-explosion" style="background: rgba(0,0,0,0.02);"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- CHAPTER 3: ANGULAR MOMENTUM -->
+    <section>
+        <div class="split-layout">
+            <div class="content-col">
+                <h3 class="section-label" style="color: var(--accent);">03. Rotational Dynamics</h3>
+                <h2>Angular Momentum</h2>
+                <p>
+                    Angular momentum ($L$) is the rotational equivalent of linear momentum. It depends on an object's
+                    moment of inertia ($I$)
+                    and its angular velocity ($\omega$). Just like linear momentum, in the absence of external twisting
+                    forces (torques), it remains constant.
+                </p>
+                <div class="math-block">
+                    $$L = I\omega \quad \rightarrow \quad I = mr^2 \quad \rightarrow \quad L_{initial} = L_{final}$$
+                </div>
+
+                <!-- ETU CARD -->
+                <div class="etu-card">
+                    <span class="etu-tag">Real World System</span>
+                    <h4 style="margin-bottom:0.5rem;">The Figure Skater</h4>
+                    <p style="font-size: 0.95rem; margin-bottom:0;">
+                        When a figure skater spins with their arms fully extended, they have a large moment of inertia
+                        ($I$).
+                        When they suddenly pull their arms and legs in tightly, their radius decreases dramatically.
+                        Because $L$ must
+                        stay constant, their angular velocity ($\omega$) spikes, making them blur into a super-fast
+                        spin.
+                    </p>
+                </div>
+
+                <!-- AI LINKS -->
+                <div class="ai-links">
+                    <span class="ai-label">Ask AI:</span>
+                    <button onclick="openAI('angular_momentum', 'perplexity')" class="ai-btn"
+                        title="Ask Perplexity"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M22.3977 7.0896h-2.3106V.0676l-7.5094 6.3542V.1577h-1.1554v6.1966L4.4904 0v7.0896H1.6023v10.3976h2.8882V24l6.932-6.3591v6.2005h1.1554v-6.0469l6.9318 6.1807v-6.4879h2.8882V7.0896zm-3.4657-4.531v4.531h-5.355l5.355-4.531zm-13.2862.0676 4.8691 4.4634H5.6458V2.6262zM2.7576 16.332V8.245h7.8476l-6.1149 6.1147v1.9723H2.7576zm2.8882 5.0404v-3.8852h.0001v-2.6488l5.7763-5.7764v7.0111l-5.7764 5.2993zm12.7086.0248-5.7766-5.1509V9.0618l5.7766 5.7766v6.5588zm2.8882-5.0652h-1.733v-1.9723L13.3948 8.245h7.8478v8.087z" />
+                        </svg></button>
+                    <button onclick="openAI('angular_momentum', 'gemini')" class="ai-btn" title="Ask Gemini"><svg
+                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81" />
+                        </svg></button>
+                    <button onclick="openAI('angular_momentum', 'chatgpt')" class="ai-btn" title="Ask ChatGPT"><svg
+                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z" />
+                        </svg></button>
+                    <button onclick="openAI('angular_momentum', 'claude')" class="ai-btn" title="Ask Claude"><svg
+                            xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision"
+                            text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd"
+                            clip-rule="evenodd" viewBox="0 0 512 509.64">
+                            <path fill="#D77655"
+                                d="M115.612 0h280.775C459.974 0 512 52.026 512 115.612v278.415c0 63.587-52.026 115.612-115.613 115.612H115.612C52.026 509.639 0 457.614 0 394.027V115.612C0 52.026 52.026 0 115.612 0z" />
+                            <path fill="#FCF2EE" fill-rule="nonzero"
+                                d="M142.27 316.619l73.655-41.326 1.238-3.589-1.238-1.996-3.589-.001-12.31-.759-42.084-1.138-36.498-1.516-35.361-1.896-8.897-1.895-8.34-10.995.859-5.484 7.482-5.03 10.717.935 23.683 1.617 35.537 2.452 25.782 1.517 38.193 3.968h6.064l.86-2.451-2.073-1.517-1.618-1.517-36.776-24.922-39.81-26.338-20.852-15.166-11.273-7.683-5.687-7.204-2.451-15.721 10.237-11.273 13.75.935 3.513.936 13.928 10.716 29.749 23.027 38.848 28.612 5.687 4.727 2.275-1.617.278-1.138-2.553-4.271-21.13-38.193-22.546-38.848-10.035-16.101-2.654-9.655c-.935-3.968-1.617-7.304-1.617-11.374l11.652-15.823 6.445-2.073 15.545 2.073 6.547 5.687 9.655 22.092 15.646 34.78 24.265 47.291 7.103 14.028 3.791 12.992 1.416 3.968 2.449-.001v-2.275l1.997-26.641 3.69-32.707 3.589-42.084 1.239-11.854 5.863-14.206 11.652-7.683 9.099 4.348 7.482 10.716-1.036 6.926-4.449 28.915-8.72 45.294-5.687 30.331h3.313l3.792-3.791 15.342-20.372 25.782-32.227 11.374-12.789 13.27-14.129 8.517-6.724 16.1-.001 11.854 17.617-5.307 18.199-16.581 21.029-13.75 17.819-19.716 26.54-12.309 21.231 1.138 1.694 2.932-.278 44.536-9.479 24.062-4.347 28.714-4.928 12.992 6.066 1.416 6.167-5.106 12.613-30.71 7.583-36.018 7.204-53.636 12.689-.657.48.758.935 24.164 2.275 10.337.556h25.301l47.114 3.514 12.309 8.139 7.381 9.959-1.238 7.583-18.957 9.655-25.579-6.066-59.702-14.205-20.474-5.106-2.83-.001v1.694l17.061 16.682 31.266 28.233 39.152 36.397 1.997 8.999-5.03 7.102-5.307-.758-34.401-25.883-13.27-11.651-30.053-25.302-1.996-.001v2.654l6.926 10.136 36.574 54.975 1.895 16.859-2.653 5.485-9.479 3.311-10.414-1.895-21.408-30.054-22.092-33.844-17.819-30.331-2.173 1.238-10.515 113.261-4.929 5.788-11.374 4.348-9.478-7.204-5.03-11.652 5.03-23.027 6.066-30.052 4.928-23.886 4.449-29.674 2.654-9.858-.177-.657-2.173.278-22.37 30.71-34.021 45.977-26.919 28.815-6.445 2.553-11.173-5.789 1.037-10.337 6.243-9.2 37.257-47.392 22.47-29.371 14.508-16.961-.101-2.451h-.859l-98.954 64.251-17.618 2.275-7.583-7.103.936-11.652 3.589-3.791 29.749-20.474-.101.102.024.101z" />
+                        </svg></button>
+                    <button onclick="openAI('angular_momentum', 'grok')" class="ai-btn" title="Ask Grok"><svg
+                            xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision"
+                            text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd"
+                            clip-rule="evenodd" viewBox="0 0 512 509.641">
+                            <path
+                                d="M115.612 0h280.776C459.975 0 512 52.026 512 115.612v278.416c0 63.587-52.025 115.613-115.612 115.613H115.612C52.026 509.641 0 457.615 0 394.028V115.612C0 52.026 52.026 0 115.612 0z" />
+                            <path fill="#fff"
+                                d="M213.235 306.019l178.976-180.002v.169l51.695-51.763c-.924 1.32-1.86 2.605-2.785 3.89-39.281 54.164-58.46 80.649-43.07 146.922l-.09-.101c10.61 45.11-.744 95.137-37.398 131.836-46.216 46.306-120.167 56.611-181.063 14.928l42.462-19.675c38.863 15.278 81.392 8.57 111.947-22.03 30.566-30.6 37.432-75.159 22.065-112.252-2.92-7.025-11.67-8.795-17.792-4.263l-124.947 92.341zm-25.786 22.437l-.033.034L68.094 435.217c7.565-10.429 16.957-20.294 26.327-30.149 26.428-27.803 52.653-55.359 36.654-94.302-21.422-52.112-8.952-113.177 30.724-152.898 41.243-41.254 101.98-51.661 152.706-30.758 11.23 4.172 21.016 10.114 28.638 15.639l-42.359 19.584c-39.44-16.563-84.629-5.299-112.207 22.313-37.298 37.308-44.84 102.003-1.128 143.81z" />
+                        </svg></button>
+                </div>
+
+                <div class="sim-controls">
+                    <div class="slider-group">
+                        <label>String/Beam Radius ($r$) <span id="val-r">100</span> px</label>
+                        <input type="range" id="input-r" min="30" max="150" step="5" value="100">
+                    </div>
+                </div>
+            </div>
+            <div class="visual-col">
+                <canvas id="canvas-angular" style="background: rgba(0,0,0,0.02);"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <section class="references">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <h3>Academic References</h3>
+            <ul>
+                <li><strong>Newton, I.</strong> (1687). <em>Philosophiæ Naturalis Principia Mathematica</em> (Laws of
+                    Motion underlying momentum).</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="../js/common.js"></script>
+    <script>
+        function openAI(topic, model) {
+            let prompt = "";
+            switch (topic) {
+                case 'elastic_momentum': prompt = "Explain the conservation of momentum and kinetic energy in perfectly elastic 1D collisions."; break;
+                case 'explosion_momentum': prompt = "Explain the conservation of momentum in an explosion or perfectly inelastic situation."; break;
+                case 'angular_momentum': prompt = "Explain the conservation of angular momentum particularly relating to moment of inertia and angular velocity."; break;
+            }
+            const encoded = encodeURIComponent(prompt);
+
+            if (model === 'gemini') {
+                navigator.clipboard.writeText(prompt).then(() => {
+                    alert("Gemini doesn't support auto-fill. The prompt has been copied to your clipboard.");
+                    window.open('https://gemini.google.com/app', '_blank');
+                });
+                return;
+            }
+
+            let url = "";
+            switch (model) {
+                case 'perplexity': url = `https://www.perplexity.ai/search?q=${encoded}`; break;
+                case 'chatgpt': url = `https://chatgpt.com/?q=${encoded}`; break;
+                case 'claude': url = `https://claude.ai/new?q=${encoded}`; break;
+                case 'grok': url = `https://grok.com/?q=${encoded}`; break;
+            }
+            if (url) window.open(url, '_blank');
+        }
+
+        const APP = {
+            visuals: [],
+            observer: null,
+            init() {
+                this.setupObserver();
+                this.initScrollAnimations();
+                this.initVisuals();
+                window.addEventListener('theme-changed', () => this.visuals.forEach(v => v.updateColors()));
+            },
+            setupObserver() {
+                this.observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        const visual = this.visuals.find(v => v.canvas === entry.target);
+                        if (visual) visual.isVisible = entry.isIntersecting;
+                    });
+                }, { threshold: 0.1 });
+            },
+            initScrollAnimations() {
+                gsap.registerPlugin(ScrollTrigger);
+                gsap.utils.toArray('h1, h2, h3').forEach(el => gsap.from(el, { opacity: 0, y: 30, duration: 1.2, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 85%" } }));
+                gsap.utils.toArray('.math-block').forEach(el => gsap.from(el, { scale: 0.95, opacity: 0, duration: 1, ease: "power2.out", scrollTrigger: { trigger: el, start: "top 90%" } }));
+            },
+            initVisuals() {
+                this.addVisual(new ElasticSim('canvas-elastic'));
+                this.addVisual(new InelasticSim('canvas-explosion'));
+                this.addVisual(new AngularSim('canvas-angular'));
+            },
+            addVisual(visual) {
+                this.visuals.push(visual);
+                this.observer.observe(visual.canvas);
+            }
+        };
+
+        class BaseSim {
+            constructor(id) {
+                this.canvas = document.getElementById(id);
+                this.ctx = this.canvas.getContext('2d');
+                this.isVisible = false;
+                this.updateColors();
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+                setTimeout(() => { this.resize(); this.loop(); }, 50);
+            }
+            updateColors() {
+                this.color = getComputedStyle(document.body).getPropertyValue('--text-main').trim();
+                this.accent = getComputedStyle(document.body).getPropertyValue('--accent').trim();
+                this.accentSecondary = getComputedStyle(document.body).getPropertyValue('--accent-secondary').trim();
+                this.bgColor = getComputedStyle(document.body).getPropertyValue('--bg-color').trim();
+            }
+            resize() {
+                const rect = this.canvas.parentElement.getBoundingClientRect();
+                this.canvas.style.width = '100%';
+                this.canvas.style.height = '100%';
+                this.scale = window.devicePixelRatio || 2;
+                this.canvas.width = rect.width * this.scale;
+                this.canvas.height = rect.height * this.scale;
+                this.w = rect.width;
+                this.h = rect.height;
+            }
+            loop() {
+                if (this.isVisible) this.draw();
+                requestAnimationFrame(() => this.loop());
+            }
+            draw() { }
+            drawEnergyBar(x, y, label, labelColor, fillLevel, fillColor, maxH = 100) {
+                const w = 30 * this.scale;
+                const h = maxH * this.scale;
+                const filledH = (fillLevel * maxH) * this.scale;
+                const px = x * this.scale;
+                const py = y * this.scale;
+
+                this.ctx.strokeStyle = this.color;
+                this.ctx.globalAlpha = 0.3;
+                this.ctx.strokeRect(px, py - h, w, h);
+                this.ctx.globalAlpha = 1.0;
+
+                this.ctx.fillStyle = fillColor || labelColor;
+                this.ctx.fillRect(px, py - filledH, w, filledH);
+
+                this.ctx.fillStyle = labelColor;
+                const fontSize = 14 * this.scale;
+                this.ctx.font = `500 ${fontSize}px sans-serif`;
+                this.ctx.textAlign = 'center';
+                this.ctx.fillText(label, px + w / 2, py + (20 * this.scale));
+            }
+        }
+
+        // ==========================
+        // 1. ELASTIC COLLISIONS SIM
+        // ==========================
+        class ElasticSim extends BaseSim {
+            constructor(id) {
+                super(id);
+                this.running = false;
+
+                // Initial State
+                this.initM1 = 1;
+                this.initV1 = 2; // m/s
+                this.initM2 = 1;
+                this.initV2 = -1; // m/s
+
+                // Setup simulation logic
+                this.resetSim();
+
+                // UI bindings
+                const bindSlider = (idSuffix, propName, textPrefix) => {
+                    document.getElementById(`input-${idSuffix}`).addEventListener('input', e => {
+                        this[propName] = parseFloat(e.target.value);
+                        document.getElementById(`val-${idSuffix}`).innerText = this[propName];
+                        if (!this.running) this.resetSim();
+                    });
+                }
+
+                bindSlider('m1', 'initM1');
+                bindSlider('v1', 'initV1');
+                bindSlider('m2', 'initM2');
+                bindSlider('v2', 'initV2');
+
+                const btn = document.getElementById('btn-col1');
+                btn.addEventListener('click', () => {
+                    if (this.running) {
+                        this.running = false;
+                        this.resetSim();
+                        btn.innerText = "Start Simulation";
+                    } else {
+                        this.running = true;
+                        btn.innerText = "Stop / Reset";
+                    }
+                });
+            }
+
+            resetSim() {
+                this.m1 = this.initM1;
+                this.v1 = this.initV1;
+                this.x1 = 20; // visual start pos
+
+                this.m2 = this.initM2;
+                this.v2 = this.initV2;
+                // Place m2 based on relative distance to collide in middle
+                this.x2 = this.w - 50;
+            }
+
+            draw() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Simulation Step
+                const speedScale = 2.0; // Visual scale for m/s
+
+                if (this.running) {
+                    this.x1 += this.v1 * speedScale;
+                    this.x2 += this.v2 * speedScale;
+
+                    // Radius calculation based on mass for visual mapping
+                    const r1 = 15 + (this.m1 * 5);
+                    const r2 = 15 + (this.m2 * 5);
+
+                    // Check collision
+                    if (Math.abs(this.x1 - this.x2) <= (r1 + r2) && (this.v1 > 0 || this.v2 < 0)) {
+                        // Math for 1D Elastic Collision
+                        // v1_final = (v1(m1-m2) + 2*m2*v2) / (m1+m2)
+                        const v1f = (this.v1 * (this.m1 - this.m2) + (2 * this.m2 * this.v2)) / (this.m1 + this.m2);
+                        const v2f = (this.v2 * (this.m2 - this.m1) + (2 * this.m1 * this.v1)) / (this.m1 + this.m2);
+                        this.v1 = v1f;
+                        this.v2 = v2f;
+
+                        // Push apart slightly to prevent clipping lock
+                        this.x1 -= 1;
+                        this.x2 += 1;
+                    }
+
+                    // Bounce off walls (optional, helps keep things in bounds)
+                    if (this.x1 < r1) { this.x1 = r1; this.v1 = Math.abs(this.v1); }
+                    if (this.x2 > this.w - r2) { this.x2 = this.w - r2; this.v2 = -Math.abs(this.v2); }
+                    if (this.x1 > this.w - r1) { this.x1 = this.w - r1; this.v1 = -Math.abs(this.v1); }
+                    if (this.x2 < r2) { this.x2 = r2; this.v2 = Math.abs(this.v2); }
+                }
+
+                // Render
+                const py = (this.h / 2) * this.scale;
+
+                // Track line
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, py + 30 * this.scale);
+                this.ctx.lineTo(this.w * this.scale, py + 30 * this.scale);
+                this.ctx.strokeStyle = this.color;
+                this.ctx.lineWidth = 2 * this.scale;
+                this.ctx.globalAlpha = 0.2;
+                this.ctx.stroke();
+                this.ctx.globalAlpha = 1.0;
+
+                // Draw objects
+                const drawObj = (x, m, v, colorCode) => {
+                    const r = (15 + (m * 5)) * this.scale;
+                    const px = x * this.scale;
+
+                    this.ctx.fillStyle = colorCode;
+                    this.ctx.beginPath();
+                    this.ctx.arc(px, py - r + 30 * this.scale, r, 0, Math.PI * 2);
+                    this.ctx.fill();
+
+                    // Draw Momentum Vector Arrow (p = mv)
+                    const p = m * v;
+                    if (Math.abs(p) > 0.1) {
+                        const arrowLen = p * 15 * this.scale;
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(px, py - r * 2.5 + 30 * this.scale);
+                        this.ctx.lineTo(px + arrowLen, py - r * 2.5 + 30 * this.scale);
+
+                        // Arrow head
+                        const dir = p > 0 ? -1 : 1;
+                        this.ctx.lineTo(px + arrowLen + (dir * 5 * this.scale), py - r * 2.5 + 25 * this.scale);
+                        this.ctx.moveTo(px + arrowLen, py - r * 2.5 + 30 * this.scale);
+                        this.ctx.lineTo(px + arrowLen + (dir * 5 * this.scale), py - r * 2.5 + 35 * this.scale);
+
+                        this.ctx.strokeStyle = this.color;
+                        this.ctx.lineWidth = 2 * this.scale;
+                        this.ctx.stroke();
+
+                        // Label
+                        this.ctx.fillStyle = this.color;
+                        this.ctx.textAlign = 'center';
+                        const textY = py - r * 2.5 + 15 * this.scale;
+                        this.ctx.font = `500 ${12 * this.scale}px sans-serif`;
+                        this.ctx.fillText(`p = ${Math.abs(p).toFixed(1)}`, px + (arrowLen / 2), textY);
+                    }
+                };
+
+                drawObj(this.x1, this.m1, this.v1, this.accent);
+                drawObj(this.x2, this.m2, this.v2, this.accentSecondary);
+
+                // Total Momentum Bar
+                const p1_initial = this.initM1 * this.initV1;
+                const p2_initial = this.initM2 * this.initV2;
+                const pTotalAbs = Math.abs(p1_initial + p2_initial);
+
+                const p1_current = this.m1 * this.v1;
+                const p2_current = this.m2 * this.v2;
+                const currentTotal = Math.abs(p1_current + p2_current);
+
+                // Use a fixed max height denominator, clamped to prevent extreme overflow visual if user sets high values
+                const maxTheoretical = Math.max(Math.abs(p1_initial) + Math.abs(p2_initial), 1) * 1.5;
+
+                this.drawEnergyBar(this.w - 120, 100, "|P| Total", this.color, currentTotal / maxTheoretical, null, 60);
+
+                // Math breakdown text
+                this.ctx.textAlign = 'left';
+                const fontSize = 14 * this.scale;
+                this.ctx.font = `400 ${fontSize}px sans-serif`;
+                this.ctx.fillStyle = this.color;
+                this.ctx.fillText(`Sum of P = ${p1_current.toFixed(1)} + ${p2_current.toFixed(1)} = ${(p1_current + p2_current).toFixed(1)} kg m/s`, 30 * this.scale, 40 * this.scale);
+            }
+        }
+
+        // ==========================
+        // 2. INELASTIC EXPLOSION SIM
+        // ==========================
+        class InelasticSim extends BaseSim {
+            constructor(id) {
+                super(id);
+                this.running = false;
+
+                this.energy = 20; // Explosion force scale
+                this.m1 = 1;
+                this.m2 = 3;
+
+                this.resetSim();
+
+                document.getElementById('input-E').addEventListener('input', e => {
+                    this.energy = parseFloat(e.target.value);
+                    document.getElementById('val-E').innerText = this.energy;
+                });
+
+                document.getElementById('input-m1-e').addEventListener('input', e => {
+                    this.m1 = parseFloat(e.target.value);
+                    document.getElementById('val-m1-e').innerText = this.m1;
+                });
+
+                document.getElementById('input-m2-e').addEventListener('input', e => {
+                    this.m2 = parseFloat(e.target.value);
+                    document.getElementById('val-m2-e').innerText = this.m2;
+                });
+
+                const btn = document.getElementById('btn-col2');
+                btn.addEventListener('click', () => {
+                    if (this.running) {
+                        this.running = false;
+                        this.resetSim();
+                        btn.innerText = "Explode!";
+                    } else {
+                        // Explosion logic: Kinetic Energy total = E
+                        // KE = 1/2 m1 v1^2 + 1/2 m2 v2^2
+                        // Momentum conserved: m1v1 + m2v2 = 0 -> v1 = - (m2/m1) v2
+                        // E = 1/2 m1 (-m2/m1 v2)^2 + 1/2 m2 v2^2
+                        // ... After algebra: v2 = sqrt( 2 * E / (m2 * (1 + m2/m1)) )
+
+                        const v2Magnitude = Math.sqrt((2 * this.energy) / (this.m2 * (1 + (this.m2 / this.m1))));
+
+                        this.v2 = v2Magnitude;
+                        this.v1 = -(this.m2 / this.m1) * this.v2;
+
+                        this.running = true;
+                        btn.innerText = "Reset";
+                    }
+                });
+            }
+
+            resetSim() {
+                this.x1 = this.w / 2;
+                this.x2 = this.w / 2;
+                this.v1 = 0;
+                this.v2 = 0;
+            }
+
+            draw() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                if (this.running) {
+                    const speedScale = 2.0;
+                    this.x1 += this.v1 * speedScale;
+                    this.x2 += this.v2 * speedScale;
+                    // friction
+                    this.v1 *= 0.98;
+                    this.v2 *= 0.98;
+                } else {
+                    // Update visual starting positions correctly based on canvas size
+                    this.x1 = this.w / 2;
+                    this.x2 = this.w / 2;
+                }
+
+                const py = (this.h / 2) * this.scale;
+
+                // Track line
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, py + 30 * this.scale);
+                this.ctx.lineTo(this.w * this.scale, py + 30 * this.scale);
+                this.ctx.strokeStyle = this.color;
+                this.ctx.lineWidth = 2 * this.scale;
+                this.ctx.globalAlpha = 0.2;
+                this.ctx.stroke();
+                this.ctx.globalAlpha = 1.0;
+
+                const drawObj = (x, m, v, colorCode, offsetMultiplier) => {
+                    // Offset x slightly for the two halves of the object visually resting together
+                    const r = (15 + (m * 5)) * this.scale;
+                    let px = (x + (!this.running ? offsetMultiplier * r / this.scale : 0)) * this.scale;
+
+                    // Boxy shapes to signify a broken larger shape
+                    this.ctx.fillStyle = colorCode;
+                    this.ctx.fillRect(px - r, py - (r * 1.5) + 30 * this.scale, r * 2, r * 1.5);
+
+                    // Draw Momentum Vector Arrow
+                    const p = m * v;
+                    if (Math.abs(p) > 0.1) {
+                        const arrowLen = p * 10 * this.scale;
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(px, py - r * 2.5 + 30 * this.scale);
+                        this.ctx.lineTo(px + arrowLen, py - r * 2.5 + 30 * this.scale);
+
+                        const dir = p > 0 ? -1 : 1;
+                        this.ctx.lineTo(px + arrowLen + (dir * 5 * this.scale), py - r * 2.5 + 25 * this.scale);
+                        this.ctx.moveTo(px + arrowLen, py - r * 2.5 + 30 * this.scale);
+                        this.ctx.lineTo(px + arrowLen + (dir * 5 * this.scale), py - r * 2.5 + 35 * this.scale);
+
+                        this.ctx.strokeStyle = this.color;
+                        this.ctx.lineWidth = 2 * this.scale;
+                        this.ctx.stroke();
+
+                        this.ctx.fillStyle = this.color;
+                        this.ctx.textAlign = 'center';
+                        const textY = py - r * 2.5 + 15 * this.scale;
+                        this.ctx.font = `500 ${12 * this.scale}px sans-serif`;
+                        this.ctx.fillText(`p = ${Math.abs(p).toFixed(1)}`, px + (arrowLen / 2), textY);
+                    }
+                };
+
+                // Draw objects. Left fragment offsets negative, Right offsets positive.
+                if (this.x2 > this.x1 || !this.running) {
+                    drawObj(this.x1, this.m1, this.v1, this.accent, -1);
+                    drawObj(this.x2, this.m2, this.v2, this.accentSecondary, 1);
+                }
+
+                // Vectors
+                const p1 = this.m1 * this.v1;
+                const p2 = this.m2 * this.v2;
+                const sum = p1 + p2;
+
+                this.ctx.textAlign = 'left';
+                const fontSize = 14 * this.scale;
+                this.ctx.font = `400 ${fontSize}px sans-serif`;
+                this.ctx.fillStyle = this.color;
+                this.ctx.fillText(`P_total = ${p1.toFixed(1)} + ${p2.toFixed(1)} = ${sum.toFixed(1)} kg m/s`, 30 * this.scale, 40 * this.scale);
+                if (Math.abs(sum) < 0.1) {
+                    this.ctx.fillText(`(Momentum Cancelled)`, 30 * this.scale, 60 * this.scale);
+                }
+            }
+        }
+
+        // ==========================
+        // 3. ANGULAR MOMENTUM SIM
+        // ==========================
+        class AngularSim extends BaseSim {
+            constructor(id) {
+                super(id);
+
+                // L = I * w
+                // I = 2 * m * r^2
+                this.massPerNode = 2; // Fixed mass
+                this.targetRadius = 100;
+                this.currentRadius = 100;
+
+                this.angle = 0;
+
+                // Constant Angular Momentum L
+                this.L = 50000;
+
+                document.getElementById('input-r').addEventListener('input', e => {
+                    this.targetRadius = parseFloat(e.target.value);
+                    document.getElementById('val-r').innerText = this.targetRadius;
+                });
+            }
+
+            draw() {
+                // Smooth radius lerp for feeling of pulling in
+                const dr = (this.targetRadius - this.currentRadius) * 0.1;
+                this.currentRadius += dr;
+
+                // Physics logic
+                const I = 2 * this.massPerNode * (this.currentRadius * this.currentRadius);
+                const omega = this.L / I; // Rotation speed
+                this.angle += omega * 0.05; // Step rotation
+
+                // Setup Draw
+                // Trailing effect
+                this.ctx.fillStyle = this.bgColor || '#ffffff';
+                this.ctx.globalAlpha = 0.3;
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                this.ctx.globalAlpha = 1.0;
+
+                const px = (this.w / 2) * this.scale;
+                const py = (this.h / 2) * this.scale;
+
+                const visualRadius = this.currentRadius * this.scale;
+
+                // Center pivot
+                this.ctx.fillStyle = this.color;
+                this.ctx.beginPath();
+                this.ctx.arc(px, py, 6 * this.scale, 0, Math.PI * 2);
+                this.ctx.fill();
+
+                // Draw string/bar
+                const x1 = px + Math.cos(this.angle) * visualRadius;
+                const y1 = py + Math.sin(this.angle) * visualRadius;
+                const x2 = px + Math.cos(this.angle + Math.PI) * visualRadius;
+                const y2 = py + Math.sin(this.angle + Math.PI) * visualRadius;
+
+                this.ctx.strokeStyle = this.color;
+                this.ctx.globalAlpha = 0.5;
+                this.ctx.lineWidth = 3 * this.scale;
+                this.ctx.beginPath();
+                this.ctx.moveTo(x1, y1);
+                this.ctx.lineTo(x2, y2);
+                this.ctx.stroke();
+                this.ctx.globalAlpha = 1.0;
+
+                // Draw masses
+                const massR = 20 * this.scale;
+                this.ctx.fillStyle = this.accent;
+                this.ctx.beginPath(); this.ctx.arc(x1, y1, massR, 0, Math.PI * 2); this.ctx.fill();
+                this.ctx.fillStyle = this.accentSecondary;
+                this.ctx.beginPath(); this.ctx.arc(x2, y2, massR, 0, Math.PI * 2); this.ctx.fill();
+
+                // Overlay text stats
+                this.ctx.textAlign = 'left';
+                const fontSize = 14 * this.scale;
+                this.ctx.font = `600 ${fontSize}px sans-serif`;
+                this.ctx.fillStyle = this.color;
+                this.ctx.fillText(`Angular velocity (w) : ${omega.toFixed(2)} rad/s`, 30 * this.scale, 40 * this.scale);
+                this.ctx.font = `400 ${fontSize}px sans-serif`;
+                this.ctx.fillText(`Moment of Inertia (I): ${I.toFixed(0)}`, 30 * this.scale, 65 * this.scale);
+                this.ctx.fillText(`Angular Momentum (L) = I * w = ${this.L}`, 30 * this.scale, 90 * this.scale);
+            }
+        }
+
+        window.onload = () => APP.init();
+    </script>
+</body>
+
+</html>
